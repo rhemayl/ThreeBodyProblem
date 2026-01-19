@@ -195,6 +195,7 @@ def threebp():
     #To save animation to disk, enable this command
     repeatanim.save("static/video/ThreeBodyProblem.mp4", writer=writer)
     print("done2")
+    return "Simulation Loaded!"
 
 def main():
     threebp()
