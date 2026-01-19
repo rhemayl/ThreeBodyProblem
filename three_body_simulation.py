@@ -280,6 +280,8 @@ def threebp():
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
+    return "Simulation Loaded!"
+
 
 def main():
     threebp()
