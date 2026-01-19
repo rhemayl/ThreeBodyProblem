@@ -4,6 +4,7 @@ def threebp():
     import scipy as sci
     import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
     from matplotlib import animation
     from mpl_toolkits.mplot3d import Axes3D
     import numpy as np
@@ -274,10 +275,11 @@ def threebp():
 
     print("DEBUG: Finished solving ODE. Now plotting...")
     #To save animation to disk, enable this command
-    repeatanim.save("3bp/ThreeBodyProblem.mp4", writer=writer)
-    print("DEBUG: Finished plotting - all done.")
+
+    repeatanim.save("static/video/ThreeBodyProblem.mp4", writer=writer)
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
+
 
 def main():
     threebp()
