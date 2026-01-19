@@ -4,6 +4,7 @@ def threebp():
     import scipy as sci
     import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
     from matplotlib import animation
     from mpl_toolkits.mplot3d import Axes3D
     import numpy as np
@@ -192,7 +193,7 @@ def threebp():
 
     print("done1")
     #To save animation to disk, enable this command
-    repeatanim.save("3bp/ThreeBodyProblem.mp4", writer=writer)
+    repeatanim.save("static/video/ThreeBodyProblem.mp4", writer=writer)
     print("done2")
 
 def main():
