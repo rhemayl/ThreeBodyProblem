@@ -27,6 +27,11 @@ m2=0.907 #Star 2
 m3=1.425 #Star 3
 
 
+#r1 = input("set body 1 starting position (x,y,z): ").split(",")
+#r2 = input("set body 2 starting position (x,y,z): ").split(",")
+#r3 = input("set body 3 starting position (x,y,z): ").split(",")
+
+
 #Define initial position vectors
 r1=[-0.5,1,0] #m
 r2=[0.5,0,0.5] #m
@@ -41,7 +46,7 @@ r3=np.array(r3)
 r_com=(m1*r1+m2*r2+m3*r3)/(m1+m2+m3)
 
 #Define initial velocities
-v1=[0.02,0.02,0.02] #m/s
+v1=[0,0.02,0.02] #m/s
 v2=[-0.05,0,-0.1] #m/s
 v3=[0,-0.03,0]
 
