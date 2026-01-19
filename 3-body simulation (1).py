@@ -7,6 +7,8 @@ from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
+plt.style.use('dark_background')
+
 # Non-Dimensionalisation
 
 G=6.67408e-11 #N-m2/kg2
@@ -28,10 +30,13 @@ m3=1.425 #Star 3
 
 
 #Define initial position vectors
-r1=[-0.5,1,0] #m
-r2=[0.5,0,0.5] #m
-r3=[0.2,1,1.5] #m
+#r1=[-0.5,1,0] #m
+#r2=[0.5,0,0.5] #m
+#r3=[0.2,1,1.5] #m
 
+r1=[0,0,0] #m
+r2=[0,0,1] #m
+r3=[0,0,2] #m
 #Convert pos vectors to arrays
 r1=np.array(r1)
 r2=np.array(r2)
@@ -44,6 +49,10 @@ r_com=(m1*r1+m2*r2+m3*r3)/(m1+m2+m3)
 v1=[0.02,0.02,0.02] #m/s
 v2=[-0.05,0,-0.1] #m/s
 v3=[0,-0.03,0]
+
+#v1=[0.02,0.02,0.02] #m/s
+#v2=[-0.05,0,-0.1] #m/s
+#v3=[0,-0.03,0]
 
 #Convert velocity vectors to arrays
 v1=np.array(v1)
@@ -105,9 +114,10 @@ r3_sol=three_body_sol[:,6:9]
 #Plot the orbits of the three bodies
 fig=plt.figure(figsize=(15,15))
 ax=fig.add_subplot(111,projection="3d")
+
 ax.plot(r1_sol[:,0],r1_sol[:,1],r1_sol[:,2],color="mediumblue")
 ax.plot(r2_sol[:,0],r2_sol[:,1],r2_sol[:,2],color="red")
-ax.plot(r3_sol[:,0],r3_sol[:,1],r3_sol[:,2],color="gold")
+ax.plot(r3_sol[:,0],r3_sol[:,1],r3_sol[:,2],color="green")
 ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color="darkblue",marker="o",s=80,label="Star 1")
 ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color="darkred",marker="o",s=80,label="Star 2")
 ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="goldenrod",marker="o",s=80,label="Star 3")
@@ -156,6 +166,9 @@ def Animate(i,head1,head2,head3):
     return trace1,trace2,trace3,head1,head2,head3,
 
 #Some beautifying
+ax.xaxis.set_pane_color((0, 0, 0, 0))
+ax.yaxis.set_pane_color((0, 0, 0, 0))
+ax.zaxis.set_pane_color((0, 0, 0, 0))
 ax.set_xlabel("x-coordinate",fontsize=14)
 ax.set_ylabel("y-coordinate",fontsize=14)
 ax.set_zlabel("z-coordinate",fontsize=14)
