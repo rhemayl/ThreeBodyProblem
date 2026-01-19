@@ -51,13 +51,10 @@ r3=np.array(r3)
 r_com=(m1*r1+m2*r2+m3*r3)/(m1+m2+m3)
 
 #Define initial velocities
-v1=[0,0.02,0.02] #m/s
+
+v1=[0.02,0.02,0.02] #m/s
 v2=[-0.05,0,-0.1] #m/s
 v3=[0,-0.03,0]
-
-#v1=[0.02,0.02,0.02] #m/s
-#v2=[-0.05,0,-0.1] #m/s
-#v3=[0,-0.03,0]
 
 #Convert velocity vectors to arrays
 v1=np.array(v1)
@@ -125,7 +122,7 @@ ax.plot(r2_sol[:,0],r2_sol[:,1],r2_sol[:,2],color="red")
 ax.plot(r3_sol[:,0],r3_sol[:,1],r3_sol[:,2],color="green")
 ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color="darkblue",marker="o",s=80,label="Star 1")
 ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color="darkred",marker="o",s=80,label="Star 2")
-ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="goldenrod",marker="o",s=80,label="Star 3")
+ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="darkgreen",marker="o",s=80,label="Star 3")
 ax.set_xlabel("x-coordinate",fontsize=14)
 ax.set_ylabel("y-coordinate",fontsize=14)
 ax.set_zlabel("z-coordinate",fontsize=14)
@@ -150,7 +147,7 @@ r3_sol_anim=r3_sol[::1,:].copy()
 #Set initial marker for planets, that is, blue,red and green circles at the initial positions
 head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color="darkblue",marker="o",s=80,label="Star 1")]
 head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color="darkred",marker="o",s=80,label="Star 2")]
-head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="goldenrod",marker="o",s=80,label="Star 3")]
+head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="darkgreen",marker="o",s=80,label="Star 3")]
 
 #Create a function Animate that changes plots every frame (here "i" is the frame number)
 def Animate(i,head1,head2,head3):
@@ -167,7 +164,7 @@ def Animate(i,head1,head2,head3):
     #Plot the current markers
     head1[0]=ax.scatter(r1_sol_anim[i-1,0],r1_sol_anim[i-1,1],r1_sol_anim[i-1,2],color="darkblue",marker="o",s=100)
     head2[0]=ax.scatter(r2_sol_anim[i-1,0],r2_sol_anim[i-1,1],r2_sol_anim[i-1,2],color="darkred",marker="o",s=100)
-    head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color="goldenrod",marker="o",s=100)
+    head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color="darkgreen",marker="o",s=100)
     return trace1,trace2,trace3,head1,head2,head3,
 
 #Some beautifying
