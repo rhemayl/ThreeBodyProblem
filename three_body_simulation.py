@@ -1,4 +1,4 @@
-def threebp():
+def threebp(values):
     #Importing important libraries
 
     import scipy as sci
@@ -41,10 +41,23 @@ def threebp():
     #r2=[0.5,0,0.5] #m
     #r3=[0.2,1,1.5] #m
 
+
     r1=[0,0,0] #m
     r2=[0,0,1] #m
     r3=[0,0,2] #m
     #Convert pos vectors to arrays
+    if len(values) == 17:
+        values = values.split(",")
+        try:
+            values = [float(n) for n in values]
+            r1=values[0:3]
+            r2=values[3:6]
+            r3=values[6:9]
+        except:
+            return "Please enter exactly 9 comma-separated numbers."
+    else:
+        return "Please enter exactly 9 comma-separated numbers."
+
     r1=np.array(r1)
     r2=np.array(r2)
     r3=np.array(r3)
@@ -193,12 +206,6 @@ def threebp():
 
     print("done1")
     #To save animation to disk, enable this command
-    repeatanim.save("static/video/ThreeBodyProblem.mp4", writer=writer)
+    repeatanim.save("static/video/NewThreeBodyProblem.mp4", writer=writer)
     print("done2")
     return "Simulation Loaded!"
-
-def main():
-    threebp()
-
-if __name__ == "__main__":
-    main()
