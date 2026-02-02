@@ -12,9 +12,10 @@ def home():
 
 
 def run_simulation():
-    values = request.form.get("values")
+    position = request.form.get("position")
+    velocity = request.form.get("velocity")
     from three_body_simulation import threebp 
-    message = threebp(values)
+    message = threebp(position, velocity)
     return render_template("index.html", message=message, video_url="/static/video/NewThreeBodyProblem.mp4", cache_bust=time.time())
 
 if __name__ == "__main__":
