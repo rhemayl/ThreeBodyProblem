@@ -70,7 +70,7 @@ def threebp(values,velocity):
             r3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) = 0:
+    elif len(velocity) == 0:
         return
     else:
         return "Please enter exactly 9 comma-separated numbers."
@@ -103,7 +103,7 @@ def threebp(values,velocity):
             v3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) = 0:
+    elif len(velocity) == 0:
         return
     else:
         return "Please enter exactly 9 comma-separated numbers."
