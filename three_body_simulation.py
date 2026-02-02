@@ -1,9 +1,10 @@
-def threebp():
+def threebp(values,velocity):
     #Importing important libraries
     import time
     import scipy as sci
     import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
     from matplotlib import animation
     from mpl_toolkits.mplot3d import Axes3D
     import numpy as np
@@ -49,10 +50,21 @@ def threebp():
     r2=[0.5,0,0.5] #m
     r3=[0.2,1,1.5] #m
 
-    #r1=[-1,0,0] #m
-    #r2=[1,0,0] #m
-    #r3=[0,0,0] #m
     #Convert pos vectors to arrays
+    if len(values) == 17:
+        values = values.split(",")
+        try:
+            values = [float(n) for n in values]
+            r1=values[0:3]
+            r2=values[3:6]
+            r3=values[6:9]
+        except:
+            return "Please enter exactly 9 comma-separated numbers."
+    elif len(velocity) == 0:
+        return
+    else:
+        return "Please enter exactly 9 comma-separated numbers."
+
     r1=np.array(r1)
     r2=np.array(r2)
     r3=np.array(r3)
@@ -72,6 +84,19 @@ def threebp():
     v1=[0.02,0.02,0.02] #m/s
     v2=[-0.05,0,-0.1] #m/s
     v3=[0,-0.03,0]
+    if len(velocity) == 17:
+        velocity = velocity.split(",")
+        try:
+            velocity = [float(n) for n in velocity]
+            v1=values[0:3]
+            v2=values[3:6]
+            v3=values[6:9]
+        except:
+            return "Please enter exactly 9 comma-separated numbers."
+    elif len(velocity) == 0:
+        return
+    else:
+        return "Please enter exactly 9 comma-separated numbers."
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
@@ -341,13 +366,12 @@ def threebp():
 
     print("DEBUG: Finished solving ODE. Now plotting...")
     #To save animation to disk, enable this command
-    repeatanim.save("3bp/ThreeBodyProblem.mp4", writer=writer)
-    print("DEBUG: Finished plotting - all done.")
+
+
+    repeatanim.save("static/video/NewThreeBodyProblem.mp4", writer=writer)
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
-def main():
-    threebp()
+    return "Simulation Loaded!"
 
-if __name__ == "__main__":
-    main()
+
