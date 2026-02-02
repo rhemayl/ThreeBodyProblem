@@ -301,11 +301,16 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         m2*r2_sol_anim +
         m3*r3_sol_anim
     ) / (m1 + m2 + m3)
+
+    r1c = r1_sol_anim - r_com_sol
+    r2c = r2_sol_anim - r_com_sol
+    r3c = r3_sol_anim - r_com_sol
+
     if FRAMING_METHOD == "c":
         
-        all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
-        all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
-        all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
+        #all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
+        #all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
+        #all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
 #
         #pad = 0.2  # PADDING factor
         #ax.set_xlim(all_x.min()*(1+pad), all_x.max()*(1+pad))
@@ -324,22 +329,41 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         #ax.set_zlim(zmin*(1-pad), zmax*(1+pad))
 
         # Distances from center of mass
-        d1 = np.linalg.norm(r1_sol_anim - r_com_sol, axis=1)
-        d2 = np.linalg.norm(r2_sol_anim - r_com_sol, axis=1)
-        d3 = np.linalg.norm(r3_sol_anim - r_com_sol, axis=1)
+        #d1 = np.linalg.norm(r1_sol_anim - r_com_sol, axis=1)
+        #d2 = np.linalg.norm(r2_sol_anim - r_com_sol, axis=1)
+        #d3 = np.linalg.norm(r3_sol_anim - r_com_sol, axis=1)
+#
+        ## Robust extent: ignore extreme outliers
+        #max_extent = np.percentile(
+        #    np.concatenate([d1, d2, d3]),
+        #    95
+        #)
 
-        # Robust extent: ignore extreme outliers
-        max_extent = np.percentile(
-            np.concatenate([d1, d2, d3]),
-            95
-        )
+        #pad = 1.2
+        #L = max_extent * pad
+#
+        #ax.set_xlim(-L, L)
+        #ax.set_ylim(-L, L)
+        #ax.set_zlim(-L, L)
+#
+        #ax.set_box_aspect((1, 1, 1))
+        all_x = np.concatenate([r1c[:,0], r2c[:,0], r3c[:,0]])
+        all_y = np.concatenate([r1c[:,1], r2c[:,1], r3c[:,1]])
+        all_z = np.concatenate([r1c[:,2], r2c[:,2], r3c[:,2]])
 
+        mavg = (m1 + m2 + m3) / 3
+        dm1, dm2, dm3 = abs(m1 - mavg), abs(m2 - mavg), abs(m3 - mavg)
+        maxdm = max(dm1, dm2, dm3) / 0.2
+        low, high = maxdm, 100-maxdm   # tighten if needed
         pad = 1.2
-        L = max_extent * pad
 
-        ax.set_xlim(-L, L)
-        ax.set_ylim(-L, L)
-        ax.set_zlim(-L, L)
+        xmin, xmax = np.percentile(all_x, [low, high])
+        ymin, ymax = np.percentile(all_y, [low, high])
+        zmin, zmax = np.percentile(all_z, [low, high])
+
+        ax.set_xlim(xmin*pad, xmax*pad)
+        ax.set_ylim(ymin*pad, ymax*pad)
+        ax.set_zlim(zmin*pad, zmax*pad)
 
         ax.set_box_aspect((1, 1, 1))
 
