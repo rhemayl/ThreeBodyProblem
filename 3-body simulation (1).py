@@ -1,6 +1,6 @@
 def threebp():
     #Importing important libraries
-
+    import time
     import scipy as sci
     import matplotlib
     import matplotlib.pyplot as plt
@@ -9,7 +9,12 @@ def threebp():
     import numpy as np
 
     plt.style.use('dark_background')
+    T1 = time.time()
 
+    FRAMING_METHOD = "d"
+    #d: dynamic framing
+    #a: autoscaling
+    #c: constant frame
     # Non-Dimensionalisation
 
     G=6.67408e-11 #N-m2/kg2
@@ -25,6 +30,10 @@ def threebp():
     K2=v_nd*t_nd/r_nd
 
     #Define masses
+    #m1=G #Star 1
+    #m2=G #Star 2
+    #m3=G #Star 3
+
     m1=1.1 #Star 1
     m2=0.907 #Star 2
     m3=1.425 #Star 3
@@ -36,13 +45,13 @@ def threebp():
 
 
     #Define initial position vectors
-    #r1=[-0.5,1,0] #m
-    #r2=[0.5,0,0.5] #m
-    #r3=[0.2,1,1.5] #m
+    r1=[-0.5,1,0] #m
+    r2=[0.5,0,0.5] #m
+    r3=[0.2,1,1.5] #m
 
-    r1=[0,0,0] #m
-    r2=[0,0,1] #m
-    r3=[0,0,2] #m
+    #r1=[-1,0,0] #m
+    #r2=[1,0,0] #m
+    #r3=[0,0,0] #m
     #Convert pos vectors to arrays
     r1=np.array(r1)
     r2=np.array(r2)
@@ -52,6 +61,13 @@ def threebp():
     r_com=(m1*r1+m2*r2+m3*r3)/(m1+m2+m3)
 
     #Define initial velocities
+
+    #V1 = 0.412103
+    #V2 = 0.283384
+
+    #v1=[V1,V2,0] #m/s
+    #v2=[V1,V2,0] #m/s
+    #v3=[-2*V1,--2*V2,0]
 
     v1=[0.02,0.02,0.02] #m/s
     v2=[-0.05,0,-0.1] #m/s
@@ -96,11 +112,11 @@ def threebp():
         derivs=np.concatenate((r_derivs,v_derivs))
         return derivs
 
-
+    HOW_LONG = 10 #seconds
     #Package initial parameters
     init_params=np.array([r1,r2,r3,v1,v2,v3]) #Package initial parameters into one size-18 array
     init_params=init_params.flatten() #Flatten the array to make it 1D
-    time_span=np.linspace(0,20,1000) #Time span is 20 orbital years and 1000 points
+    time_span=np.linspace(0,2*HOW_LONG,100*HOW_LONG) #Time span is 20 orbital years and 1000 points
 
 
     #Run the ODE solver
@@ -141,32 +157,88 @@ def threebp():
     #Create new arrays for animation, this gives you the flexibility
     #to reduce the number of points in the animation if it becomes slow
     #Currently set to select every 4th point
-    r1_sol_anim=r1_sol[::1,:].copy()
-    r2_sol_anim=r2_sol[::1,:].copy()
-    r3_sol_anim=r3_sol[::1,:].copy()
+    stride = 1
+    r1_sol_anim=r1_sol[::stride,:].copy()
+    r2_sol_anim=r2_sol[::stride,:].copy()
+    r3_sol_anim=r3_sol[::stride,:].copy()
 
     #Set initial marker for planets, that is, blue,red and green circles at the initial positions
-    head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color="darkblue",marker="o",s=80,label="Star 1")]
-    head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color="darkred",marker="o",s=80,label="Star 2")]
-    head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="darkgreen",marker="o",s=80,label="Star 3")]
+    #head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color="darkblue",marker="o",s=80,label="Star 1")]
+    #head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color="darkred",marker="o",s=80,label="Star 2")]
+    #head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="darkgreen",marker="o",s=80,label="Star 3")]
+    
+    head1=ax.scatter([],[],[],color="darkblue",marker="o",s=80,label="Star 1")
+    head2=ax.scatter([],[],[],color="darkred",marker="o",s=80,label="Star 2")
+    head3=ax.scatter([],[],[],color="darkgreen",marker="o",s=80,label="Star 3")
 
+    trace1, = ax.plot([], [], [], color = "mediumblue")
+    trace2, = ax.plot([], [], [], color = "red")
+    trace3, = ax.plot([], [], [], color = "green")
     #Create a function Animate that changes plots every frame (here "i" is the frame number)
+    
+    SCALING_WINDOW = 100     # frames to consider
+    SCALING_PADDING = 0.3
     def Animate(i,head1,head2,head3):
         #Remove old markers
-        head1[0].remove()
-        head2[0].remove()
-        head3[0].remove()
+        #head1[0].remove()
+        #head2[0].remove()
+        #head3[0].remove()
 
         #Plot the orbits (every iteration we plot from initial position to the current position)
-        trace1=ax.plot(r1_sol_anim[:i,0],r1_sol_anim[:i,1],r1_sol_anim[:i,2],color="mediumblue")
-        trace2=ax.plot(r2_sol_anim[:i,0],r2_sol_anim[:i,1],r2_sol_anim[:i,2],color="red")
-        trace3=ax.plot(r3_sol_anim[:i,0],r3_sol_anim[:i,1],r3_sol_anim[:i,2],color="gold")
+        #trace1=ax.plot(r1_sol_anim[:i,0],r1_sol_anim[:i,1],r1_sol_anim[:i,2],color="mediumblue")
+        #trace2=ax.plot(r2_sol_anim[:i,0],r2_sol_anim[:i,1],r2_sol_anim[:i,2],color="red")
+        #trace3=ax.plot(r3_sol_anim[:i,0],r3_sol_anim[:i,1],r3_sol_anim[:i,2],color="green")
 
         #Plot the current markers
-        head1[0]=ax.scatter(r1_sol_anim[i-1,0],r1_sol_anim[i-1,1],r1_sol_anim[i-1,2],color="darkblue",marker="o",s=100)
-        head2[0]=ax.scatter(r2_sol_anim[i-1,0],r2_sol_anim[i-1,1],r2_sol_anim[i-1,2],color="darkred",marker="o",s=100)
-        head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color="darkgreen",marker="o",s=100)
-        return trace1,trace2,trace3,head1,head2,head3,
+        #head1[0]=ax.scatter(r1_sol_anim[i-1,0],r1_sol_anim[i-1,1],r1_sol_anim[i-1,2],color="darkblue",marker="o",s=100)
+        #head2[0]=ax.scatter(r2_sol_anim[i-1,0],r2_sol_anim[i-1,1],r2_sol_anim[i-1,2],color="darkred",marker="o",s=100)
+        #head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color="darkgreen",marker="o",s=100)
+        trace1.set_data(r1_sol_anim[:i,0], r1_sol_anim[:i,1])
+        trace1.set_3d_properties(r1_sol_anim[:i,2])
+        trace2.set_data(r2_sol_anim[:i,0], r2_sol_anim[:i,1])
+        trace2.set_3d_properties(r2_sol_anim[:i,2])
+        trace3.set_data(r3_sol_anim[:i,0], r3_sol_anim[:i,1])
+        trace3.set_3d_properties(r3_sol_anim[:i,2])
+
+        head1._offsets3d = (
+            [r1_sol_anim[i,0]],
+            [r1_sol_anim[i,1]],
+            [r1_sol_anim[i,2]]
+        )
+        head2._offsets3d = (
+            [r2_sol_anim[i,0]],
+            [r2_sol_anim[i,1]],
+            [r2_sol_anim[i,2]])
+        head3._offsets3d = (
+            [r3_sol_anim[i,0]],
+            [r3_sol_anim[i,1]],
+            [r3_sol_anim[i,2]])
+        
+        if FRAMING_METHOD == "d":
+            start = max(0, i - SCALING_WINDOW)
+            xs = np.concatenate([
+            r1_sol_anim[start:i+1,0],
+            r2_sol_anim[start:i+1,0],
+            r3_sol_anim[start:i+1,0],
+            ])
+            ys = np.concatenate([
+                r1_sol_anim[start:i+1,1],
+                r2_sol_anim[start:i+1,1],
+                r3_sol_anim[start:i+1,1],
+            ])
+            zs = np.concatenate([
+                r1_sol_anim[start:i+1,2],
+                r2_sol_anim[start:i+1,2],
+                r3_sol_anim[start:i+1,2],
+            ])
+
+            ax.set_xlim(xs.min()*(1-SCALING_PADDING), xs.max()*(1+SCALING_PADDING))
+            ax.set_ylim(ys.min()*(1-SCALING_PADDING), ys.max()*(1+SCALING_PADDING))
+            ax.set_zlim(zs.min()*(1-SCALING_PADDING), zs.max()*(1+SCALING_PADDING))
+        elif FRAMING_METHOD == "a":
+            ax.autoscale_view()
+        
+        return trace1,trace2,trace3,head1,head2,head3
 
     #Some beautifying
     ax.xaxis.set_pane_color((0, 0, 0, 0))
@@ -182,18 +254,30 @@ def threebp():
     #If used in Jupyter Notebook, animation will not display only a static image will display with this command
     # anim_2b = animation.FuncAnimation(fig,Animate_2b,frames=1000,interval=5,repeat=False,blit=False,fargs=(h1,h2))
 
+    # PADDING APPROACH
+    if FRAMING_METHOD == "c":
+        all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
+        all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
+        all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
+
+        pad = 0.2  # PADDING factor
+        ax.set_xlim(all_x.min()*(1+pad), all_x.max()*(1+pad))
+        ax.set_ylim(all_y.min()*(1+pad), all_y.max()*(1+pad))
+        ax.set_zlim(all_z.min()*(1+pad), all_z.max()*(1+pad))
 
     #Use the FuncAnimation module to make the animation
-    repeatanim=animation.FuncAnimation(fig,Animate,frames=300,interval=10,repeat=False,blit=False,fargs=(head1,head2,head3))
+    repeatanim=animation.FuncAnimation(fig,Animate,frames=30*HOW_LONG,interval=10,repeat=False,blit=False,fargs=(head1,head2,head3))
 
     # Set up formatting for the movie files
     Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=30, metadata=dict(artist='Me'), bitrate=4000)
+    writer = Writer(fps=30, metadata=dict(artist='Me'), bitrate=2000)
 
-    print("done1")
+    print("DEBUG: Finished solving ODE. Now plotting...")
     #To save animation to disk, enable this command
     repeatanim.save("3bp/ThreeBodyProblem.mp4", writer=writer)
-    print("done2")
+    print("DEBUG: Finished plotting - all done.")
+    T2 = time.time()
+    print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
 def main():
     threebp()
