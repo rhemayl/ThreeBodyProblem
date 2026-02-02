@@ -1,4 +1,4 @@
-def threebp(values,velocity):
+def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/NewThreeBodyProblem.mp4"):
     #Importing important libraries
     import time
     import scipy as sci
@@ -35,24 +35,30 @@ def threebp(values,velocity):
     #m2=G #Star 2
     #m3=G #Star 3
 
-    m1=1.1 #Star 1
-    m2=0.907 #Star 2
-    m3=1.425 #Star 3
 
+    
+    if mass1:
+        m1 = float(mass1)
+    else: 
+        m1=1.1 
+    if mass2:
+        m2 = float(mass2)
+    else: 
+        m2=0.907
+    
+    if mass3:
+        m3 = float(mass3)
+    else: 
+        m3=1.425
 
     #r1 = input("set body 1 starting position (x,y,z): ").split(",")
     #r2 = input("set body 2 starting position (x,y,z): ").split(",")
     #r3 = input("set body 3 starting position (x,y,z): ").split(",")
 
 
-    #Define initial position vectors
-    r1=[-0.5,1,0] #m
-    r2=[0.5,0,0.5] #m
-    r3=[0.2,1,1.5] #m
-
     #Convert pos vectors to arrays
-    if len(values) == 17:
-        values = values.split(",")
+    if len(position) == 17:
+        values = position.split(",")
         try:
             values = [float(n) for n in values]
             r1=values[0:3]
@@ -60,8 +66,10 @@ def threebp(values,velocity):
             r3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) == 0:
-        return
+    elif len(position) == 0:
+        r1=[-0.5,1,0] #m
+        r2=[0.5,0,0.5] #m
+        r3=[0.2,1,1.5]
     else:
         return "Please enter exactly 9 comma-separated numbers."
 
@@ -88,13 +96,15 @@ def threebp(values,velocity):
         velocity = velocity.split(",")
         try:
             velocity = [float(n) for n in velocity]
-            v1=values[0:3]
-            v2=values[3:6]
-            v3=values[6:9]
+            v1=velocity[0:3]
+            v2=velocity[3:6]
+            v3=velocity[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
     elif len(velocity) == 0:
-        return
+        v1=[0.02,0.02,0.02] #m/s
+        v2=[-0.05,0,-0.1] #m/s
+        v3=[0,-0.03,0]
     else:
         return "Please enter exactly 9 comma-separated numbers."
 
@@ -344,7 +354,7 @@ def threebp(values,velocity):
     #To save animation to disk, enable this command
 
 
-    repeatanim.save("static/video/NewThreeBodyProblem.mp4", writer=writer)
+    repeatanim.save(output_path, writer=writer)
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
