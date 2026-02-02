@@ -1,4 +1,4 @@
-def threebp(values):
+def threebp(values,velocity):
     #Importing important libraries
 
     import scipy as sci
@@ -55,6 +55,8 @@ def threebp(values):
             r3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
+    elif len(velocity) = 0:
+        return
     else:
         return "Please enter exactly 9 comma-separated numbers."
 
@@ -70,6 +72,19 @@ def threebp(values):
     v1=[0.02,0.02,0.02] #m/s
     v2=[-0.05,0,-0.1] #m/s
     v3=[0,-0.03,0]
+    if len(velocity) == 17:
+        velocity = velocity.split(",")
+        try:
+            velocity = [float(n) for n in velocity]
+            v1=values[0:3]
+            v2=values[3:6]
+            v3=values[6:9]
+        except:
+            return "Please enter exactly 9 comma-separated numbers."
+    elif len(velocity) = 0:
+        return
+    else:
+        return "Please enter exactly 9 comma-separated numbers."
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
