@@ -12,7 +12,7 @@ def threebp(values,velocity):
     plt.style.use('dark_background')
     T1 = time.time()
 
-    FRAMING_METHOD = "d"
+    FRAMING_METHOD = "c"
     #d: dynamic framing
     #a: autoscaling
     #c: constant frame
@@ -159,12 +159,18 @@ def threebp(values,velocity):
     fig=plt.figure(figsize=(15,15))
     ax=fig.add_subplot(111,projection="3d")
 
+    mmin = min(m1, m2, m3)
+
+    s1 = 60 * m1 / mmin
+    s2 = 60 * m2 / mmin
+    s3 = 60 * m3 / mmin
+
     ax.plot(r1_sol[:,0],r1_sol[:,1],r1_sol[:,2],color="mediumblue")
     ax.plot(r2_sol[:,0],r2_sol[:,1],r2_sol[:,2],color="red")
     ax.plot(r3_sol[:,0],r3_sol[:,1],r3_sol[:,2],color="green")
-    ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color="darkblue",marker="o",s=80,label="Star 1")
-    ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color="darkred",marker="o",s=80,label="Star 2")
-    ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="darkgreen",marker="o",s=80,label="Star 3")
+    ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color="darkblue",marker="o",s=s1,label="Star 1")
+    ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color="darkred",marker="o",s=s2,label="Star 2")
+    ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="darkgreen",marker="o",s=s3,label="Star 3")
     ax.set_xlabel("x-coordinate",fontsize=14)
     ax.set_ylabel("y-coordinate",fontsize=14)
     ax.set_zlabel("z-coordinate",fontsize=14)
@@ -192,9 +198,9 @@ def threebp(values,velocity):
     #head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color="darkred",marker="o",s=80,label="Star 2")]
     #head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="darkgreen",marker="o",s=80,label="Star 3")]
     
-    head1=ax.scatter([],[],[],color="darkblue",marker="o",s=80,label="Star 1")
-    head2=ax.scatter([],[],[],color="darkred",marker="o",s=80,label="Star 2")
-    head3=ax.scatter([],[],[],color="darkgreen",marker="o",s=80,label="Star 3")
+    head1=ax.scatter([],[],[],color="darkblue",marker="o",s=s1,label="Star 1")
+    head2=ax.scatter([],[],[],color="darkred",marker="o",s=s2,label="Star 2")
+    head3=ax.scatter([],[],[],color="darkgreen",marker="o",s=s3,label="Star 3")
 
     trace1, = ax.plot([], [], [], color = "mediumblue")
     trace2, = ax.plot([], [], [], color = "red")
@@ -280,15 +286,52 @@ def threebp(values,velocity):
     # anim_2b = animation.FuncAnimation(fig,Animate_2b,frames=1000,interval=5,repeat=False,blit=False,fargs=(h1,h2))
 
     # PADDING APPROACH
+    r_com_sol = (
+        m1*r1_sol_anim +
+        m2*r2_sol_anim +
+        m3*r3_sol_anim
+    ) / (m1 + m2 + m3)
     if FRAMING_METHOD == "c":
+        
         all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
         all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
         all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
+#
+        #pad = 0.2  # PADDING factor
+        #ax.set_xlim(all_x.min()*(1+pad), all_x.max()*(1+pad))
+        #ax.set_ylim(all_y.min()*(1+pad), all_y.max()*(1+pad))
+        #ax.set_zlim(all_z.min()*(1+pad), all_z.max()*(1+pad))
 
-        pad = 0.2  # PADDING factor
-        ax.set_xlim(all_x.min()*(1+pad), all_x.max()*(1+pad))
-        ax.set_ylim(all_y.min()*(1+pad), all_y.max()*(1+pad))
-        ax.set_zlim(all_z.min()*(1+pad), all_z.max()*(1+pad))
+        #low, high = 2, 98   # percentiles
+        #pad = 0.2
+#
+        #xmin, xmax = np.percentile(all_x, [low, high])
+        #ymin, ymax = np.percentile(all_y, [low, high])
+        #zmin, zmax = np.percentile(all_z, [low, high])
+#
+        #ax.set_xlim(xmin*(1-pad), xmax*(1+pad))
+        #ax.set_ylim(ymin*(1-pad), ymax*(1+pad))
+        #ax.set_zlim(zmin*(1-pad), zmax*(1+pad))
+
+        # Distances from center of mass
+        d1 = np.linalg.norm(r1_sol_anim - r_com_sol, axis=1)
+        d2 = np.linalg.norm(r2_sol_anim - r_com_sol, axis=1)
+        d3 = np.linalg.norm(r3_sol_anim - r_com_sol, axis=1)
+
+        # Robust extent: ignore extreme outliers
+        max_extent = np.percentile(
+            np.concatenate([d1, d2, d3]),
+            95
+        )
+
+        pad = 1.2
+        L = max_extent * pad
+
+        ax.set_xlim(-L, L)
+        ax.set_ylim(-L, L)
+        ax.set_zlim(-L, L)
+
+        ax.set_box_aspect((1, 1, 1))
 
     #Use the FuncAnimation module to make the animation
     repeatanim=animation.FuncAnimation(fig,Animate,frames=30*HOW_LONG,interval=10,repeat=False,blit=False,fargs=(head1,head2,head3))
