@@ -1,6 +1,4 @@
-WEBSITE = True
-
-def twobp(values,velocity):
+def twobp(position, velocity, mass1, mass2, output_path = "static/video/NewTwoBodyProblem.mp4"):
     #Importing important libraries
     import time
     import scipy as sci
@@ -18,11 +16,6 @@ def twobp(values,velocity):
     #a: autoscaling
     #c: constant frame
     FRAMING_METHOD = "d"
-    
-    if WEBSITE:
-        OUTPUT_PATH = "static/video/NewTwoBodyProblem.mp4"
-    else:
-        OUTPUT_PATH = "test_videos/TempTwoBodyProblem.mp4"
     
     #MARKER_COLORS = ("darkblue", "darkred")
     MARKER_COLORS = ("darkturquoise", "mediumorchid")
@@ -47,32 +40,34 @@ def twobp(values,velocity):
     #m2=G #Star 2
     #m3=G #Star 3
 
-    m1=1.1 #Star 1
-    m2=0.907 #Star 2
+    if mass1:
+        m1 = float(mass1)
+    else: 
+        m1=1.1 
+    if mass2:
+        m2 = float(mass2)
+    else: 
+        m2=0.907
 
     #r1 = input("set body 1 starting position (x,y,z): ").split(",")
     #r2 = input("set body 2 starting position (x,y,z): ").split(",")
     #r3 = input("set body 3 starting position (x,y,z): ").split(",")
 
-
-    #Define initial position vectors
-    r1=[-0.5,1,0] #m
-    r2=[0.5,0,0.5] #m
-
     #Convert pos vectors to arrays
-    if WEBSITE:
-        if len(values) == 11:
-            values = values.split(",")
-            try:
-                values = [float(n) for n in values]
-                r1=values[0:3]
-                r2=values[3:6]
-            except:
-                return "Please enter exactly 6 comma-separated numbers."
-        elif len(velocity) == 0:
-            return
-        else:
+    if len(values) == 11:
+        values = values.split(",")
+        try:
+            values = [float(n) for n in values]
+            r1=values[0:3]
+            r2=values[3:6]
+        except:
             return "Please enter exactly 6 comma-separated numbers."
+    elif len(velocity) == 0:
+        #Define initial position vectors
+        r1=[-0.5,1,0] #m
+        r2=[0.5,0,0.5] #m
+    else:
+        return "Please enter exactly 6 comma-separated numbers."
 
     r1=np.array(r1)
     r2=np.array(r2)
@@ -89,26 +84,19 @@ def twobp(values,velocity):
     #v2=[V1,V2,0] #m/s
     #v3=[-2*V1,--2*V2,0]
 
-    v1=[0.02,0.02,0.02] #m/s
-    v2=[-0.05,0,-0.1] #m/s
-
-    # Softening parameter
-    eps = 1e-3
-
-    if WEBSITE:
-        if len(velocity) == 17:
-            velocity = velocity.split(",")
-            try:
-                velocity = [float(n) for n in velocity]
-                v1=values[0:3]
-                v2=values[3:6]
-
-            except:
-                return "Please enter exactly 9 comma-separated numbers."
-        elif len(velocity) == 0:
-            return
-        else:
+    if len(velocity) == 17:
+        velocity = velocity.split(",")
+        try:
+            velocity = [float(n) for n in velocity]
+            v1=values[0:3]
+            v2=values[3:6]
+        except:
             return "Please enter exactly 9 comma-separated numbers."
+    elif len(velocity) == 0:
+        v1=[0.02,0.02,0.02] #m/s
+        v2=[-0.05,0,-0.1] #m/s
+    else:
+        return "Please enter exactly 9 comma-separated numbers."
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
@@ -351,12 +339,11 @@ def twobp(values,velocity):
     #To save animation to disk, enable this command
 
 
-    repeatanim.save(OUTPUT_PATH, writer=writer)
+    repeatanim.save(output_path, writer=writer)
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
     return "Simulation Loaded!"
 
 if __name__ == "__main__":
-    WEBSITE = False
-    twobp([], [])
+    twobp([], [], None, None, "test_videos/TempTwoBodyProblem.mp4")

@@ -391,5 +391,4 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     return "Simulation Loaded!"
 
 if __name__ == "__main__":
-    WEBSITE = False
-    threebp([], [], 0, 0, 0, output_path = "test_videos/ThreeBodyProblem.mp4")
+    threebp([], [], None, None, None, output_path = "test_videos/ThreeBodyProblem.mp4")
