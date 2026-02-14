@@ -7,20 +7,7 @@
 
 <body>
     <h2>Creating video... please wait</h2>
-
-    <script>
-        function checkVideo() {
-            fetch("/check_video")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ready) {
-                        window.location.href = "/result";
-                    }
-                });
-        }
-
-        setInterval(checkVideo, 1000);
-    </script>
-
+    <script src="/static/js/loading.js"></script>
 </body>
+
 </html>

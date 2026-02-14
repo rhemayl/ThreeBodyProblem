@@ -1,6 +1,4 @@
 body {
-    width: 100%;
-    height: fit-content;
     margin: 0;
     padding: 0;
 }
@@ -10,12 +8,6 @@ body {
     height: 200vh;
     position: relative;
     display: flex;
-}
-
-.container {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
 }
 
 .animation {
@@ -41,7 +33,6 @@ body {
     top: calc(50% - 400px);
     left: calc(50% - 175px);
     transition: 0.5s ease-in-out;
-    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -49,4 +40,4 @@ body {
 
 .away {
     transform-origin: bottom left;
-      }
+}
