@@ -1,36 +1,64 @@
-<div class="container animation">
-    <form action="/run-simulation" method="post">
-    <label for="values">Starting positions:</label>
-    <input type="text" name="position" id="position" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
-    <br><br>
 
-    <label for="values">Starting velocities:</label>
-    <input type="text" name="velocity" id="velocity" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
-    <br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three Body Probelm</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
 
+<body>
+    <div class="stack-area">
+        <div class="animation">
+            <form action="/run-simulation" method="post">
+            <label for="values">Starting positions:</label>
+            <input type="text" name="position" id="position" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
+            <br><br>
 
-    <label for="mass1">Mass 1:</label>
-    <input type="range" id="mass1" name="mass1" min="0.01" max="2" step="0.01" value="1">
-    <br>
-
-    <label for="mass2">Mass 2:</label>
-    <input type="range" id="mass2" name="mass2" min="0.01" max="2" step="0.01" value="1">
-    <br>
-
-    <label for="mass3">Mass 3:</label>
-    <input type="range" id="mass3" name="mass3" min="0.01" max="2" step="0.01" value="1">
-    <br>
-
-    <button type="submit">Run 3-Body Simulation</button>
-
-    </form>
+            <label for="values">Starting velocities:</label>
+            <input type="text" name="velocity" id="velocity" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
+            <br><br>
 
 
-    {% if video_url %}
-    <video width="600" controls>
-        <source src="{{ video_url }}?{{ cache_bust }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    <p>{{ message }}</p>
-    {% endif %} 
-</div>
+            <label for="mass1">Mass 1:</label>
+            <input type="range" id="mass1" name="mass1" min="0.01" max="2" step="0.01" value="1">
+            <br>
+
+            <label for="mass2">Mass 2:</label>
+            <input type="range" id="mass2" name="mass2" min="0.01" max="2" step="0.01" value="1">
+            <br>
+
+            <label for="mass3">Mass 3:</label>
+            <input type="range" id="mass3" name="mass3" min="0.01" max="2" step="0.01" value="1">
+            <br>
+
+            <button type="submit">Run 3-Body Simulation</button>
+
+            </form>
+
+
+            {% if video_url %}
+            <video width="600" controls>
+                <source src="{{ video_url }}?{{ cache_bust }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p>{{ message }}</p>
+            {% endif %} 
+        </div>
+
+        <div class="explanation">
+            <div class="card">
+                <div class="sub">The Three Body Problem</div>
+            </div>
+            <div class="card">
+                <div class="sub">The Theory</div>
+            </div>
+            <div class="card">
+                <div class="sub">The Code</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="/static/js/script.js"></script>
+</html>
