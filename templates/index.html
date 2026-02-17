@@ -48,17 +48,65 @@
 
         <div class="explanation">
             <div class="card">
-                <div class="sub">The Three Body Problem</div>
+                The Three Body Problem
+                <br>
+                The three body problem describes the motion of three bodies under mutual graviational interactions. This describes many situations in astronomy such as the motion of the Moon under the Sun and Earth's influence. 
+                <br>
+                While the two body system is solvable, the addition of a third body makes the mathematical equations too complex, meaning that there have been no known general solutions (a formula that can predict the future positions of all three bodies). 
+                It is an example of a chaotic system, also known as the "butterfly effect" meaning that while we are able to predict it's future states, any change in force or mass can drastically affect it's output, making calculations impossible. 
+                <br>
+                Many cases leads to one body being eliminated through ejection or collision, which can lead to a stable two body interaction. 
+                <br>
+                However, there are specific situations that have been discovered to produce a stable orbit that is known to be stable.
+                Another situation is as an Restricted three body problem, where one body is small enough that it can be simplified into a two body system.
+
             </div>
             <div class="card">
-                <div class="sub">The Theory</div>
+                The Mathematics
+                <br>
+                The three body problem is calculated through taking the positions and velocities of three point masses, which is represented as masses, that orbit each other in space, and finding their trajectories using Newton's law of motion and universal gravitation.
+                <br>
+                The calculations of the three body problem can be given in terms of the equations vector positions \( r_i \) of three gravitationally interacting bodies of mass \( m_i \), where G is the gravitational constant.
+                <br>
+                By Newton's second law, the force exerted on each of the bodies is ma=F, or \[m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i\]
+                <br>
+                Under Newtonian Gravitation, the force on a pair of bodies is \[
+                \mathbf{F}_{ij}
+                =
+                - G \frac{m_i m_j (\mathbf{r}_i - \mathbf{r}_j)}
+                {\left| \mathbf{r}_i - \mathbf{r}_j \right|^3}
+                \]
+                <br>
+                The resultsant force acting on any single body is the sum of the forces acting of the two other bodies: \[
+                \mathbf{F}_1 = \mathbf{F}_{12} + \mathbf{F}_{13}
+                \]
+
+                \[
+                \mathbf{F}_2 = \mathbf{F}_{21} + \mathbf{F}_{23}
+                \]
+
+                \[
+                \mathbf{F}_3 = \mathbf{F}_{31} + \mathbf{F}_{32}
+                \]
+                <br>
+                    By putting the first equation into this, you get:
+                \[
+                \begin{aligned}
+                \ddot{\mathbf{r}}_{1} &= -G m_2 \frac{\mathbf{r}_1 - \mathbf{r}_2}{|\mathbf{r}_1 - \mathbf{r}_2|^3} - G m_3 \frac{\mathbf{r}_1 - \mathbf{r}_3}{|\mathbf{r}_1 - \mathbf{r}_3|^3},\\
+                \ddot{\mathbf{r}}_{2} &= -G m_3 \frac{\mathbf{r}_2 - \mathbf{r}_3}{|\mathbf{r}_2 - \mathbf{r}_3|^3} - G m_1 \frac{\mathbf{r}_2 - \mathbf{r}_1}{|\mathbf{r}_2 - \mathbf{r}_1|^3},\\
+                \ddot{\mathbf{r}}_{3} &= -G m_1 \frac{\mathbf{r}_3 - \mathbf{r}_1}{|\mathbf{r}_3 - \mathbf{r}_1|^3} - G m_2 \frac{\mathbf{r}_3 - \mathbf{r}_2}{|\mathbf{r}_3 - \mathbf{r}_2|^3}.
+                \end{aligned}
+                \]
+                Each of the vector equations have three dimensions and so can be converted into 9 equations that represent direction only in one axis
+
             </div>
             <div class="card">
-                <div class="sub">The Code</div>
+                The Code
             </div>
         </div>
     </div>
 </body>
 
 <script src="/static/js/script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </html>

@@ -34,10 +34,14 @@ body {
     left: calc(50% - 175px);
     transition: 0.5s ease-in-out;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: column;
 }
 
 .away {
     transform-origin: bottom left;
+}
+
+i, sub, var {
+    display: inline !important;
 }
