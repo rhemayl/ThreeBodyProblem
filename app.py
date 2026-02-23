@@ -15,11 +15,9 @@ def home():
 
 def generate_video(position, velocity, mass1, mass2, mass3, video_path):
     from three_body_simulation import threebp 
-    threebp(position, velocity, mass1, mass2, mass3, output_path=video_path)
+    threebp(position, velocity, mass1, mass2, mass3, video_path)
     with open(flag_path, "w") as f:
         f.write("done")
-
-
 
 
 @app.route("/run-simulation", methods=["POST"])
@@ -36,7 +34,7 @@ def run_simulation():
 
     if os.path.exists(flag_path):
         os.remove(flag_path)
-    
+
     thread = threading.Thread(
         target=generate_video,
         args=(position, velocity, mass1, mass2, mass3, video_path)
@@ -45,9 +43,11 @@ def run_simulation():
     
     return render_template("loading.html")
 
+
 @app.route("/check_video")
 def check_video():
-    return {"ready": os.path.exists(flag_path)}
+    return {"ready": os.path.exists(flag_path) and os.path.exists(video_path)
+}
 
 @app.route("/result")
 def result():
