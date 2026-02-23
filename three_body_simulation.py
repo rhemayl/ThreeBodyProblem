@@ -1,13 +1,14 @@
+#Importing important libraries
+import time
+import scipy as sci
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use("Agg")
+from matplotlib import animation
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+
 def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/NewThreeBodyProblem.mp4"):
-    #Importing important libraries
-    import time
-    import scipy as sci
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
-    from matplotlib import animation
-    from mpl_toolkits.mplot3d import Axes3D
-    import numpy as np
 
     plt.style.use('dark_background')
     T1 = time.time()
@@ -42,8 +43,6 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     #m2=G #Star 2
     #m3=G #Star 3
 
-
-    
     if mass1:
         m1 = float(mass1)
     else: 
@@ -64,8 +63,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
 
     #Convert pos vectors to arrays
-    if len(position) == 17:
-        values = position.split(",")
+    values = position.split(",")
+    if len(position) == 9:
+        
         try:
             values = [float(n) for n in values]
             r1=values[0:3]
@@ -73,7 +73,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             r3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(position) == 0:
+    elif len(values) == 1:
         r1=[-0.5,1,0] #m
         r2=[0.5,0,0.5] #m
         r3=[0.2,1,1.5]
@@ -99,8 +99,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     v1=[0.02,0.02,0.02] #m/s
     v2=[-0.05,0,-0.1] #m/s
     v3=[0,-0.03,0]
-    if len(velocity) == 17:
-        velocity = velocity.split(",")
+    velocity = velocity.split(",")
+    if len(velocity) == 9:
+        
         try:
             velocity = [float(n) for n in velocity]
             v1=velocity[0:3]
@@ -108,7 +109,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             v3=velocity[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) == 0:
+    elif len(velocity) == 1:
         v1=[0.02,0.02,0.02] #m/s
         v2=[-0.05,0,-0.1] #m/s
         v3=[0,-0.03,0]
@@ -134,9 +135,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         v3=w[15:18]
 
         #Find out distances between the three bodies
-        r12=sci.linalg.norm(r2-r1)
-        r13=sci.linalg.norm(r3-r1)
-        r23=sci.linalg.norm(r3-r2)
+        r12=np.linalg.norm(r2-r1)
+        r13=np.linalg.norm(r3-r1)
+        r23=np.linalg.norm(r3-r2)
 
         #Define the derivatives according to the equations
         dv1bydt=K1*m2*(r2-r1)/r12**3+K1*m3*(r3-r1)/r13**3
@@ -162,7 +163,8 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
 
     #Run the ODE solver
-    three_body_sol=sci.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2))
+    import scipy.integrate
+    three_body_sol=scipy.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2))
 
 
     #Store the position solutions into three distinct arrays
@@ -374,7 +376,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         ax.set_box_aspect((1, 1, 1))
 
     #Use the FuncAnimation module to make the animation
-    repeatanim=animation.FuncAnimation(fig,Animate,frames=30*HOW_LONG,interval=10,repeat=False,blit=False,fargs=(head1,head2,head3))
+    repeatanim=animation.FuncAnimation(fig,Animate,frames=30*HOW_LONG,interval=HOW_LONG,repeat=False,blit=False,fargs=(head1,head2,head3))
 
     # Set up formatting for the movie files
     Writer = animation.writers['ffmpeg']
@@ -391,4 +393,4 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     return "Simulation Loaded!"
 
 if __name__ == "__main__":
-    threebp([], [], None, None, None, output_path = "test_videos/ThreeBodyProblem.mp4")
+    threebp("", "", None, None, None, output_path = "test_videos/ThreeBodyProblem.mp4")
