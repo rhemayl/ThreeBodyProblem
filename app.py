@@ -19,6 +19,11 @@ def generate_video(position, velocity, mass1, mass2, mass3, video_path):
     with open(flag_path, "w") as f:
         f.write("done")
 
+def generate_videotbp(position, velocity, mass1, mass2, video_path):
+    from two_body_simulation import twobp 
+    twobp(position, velocity, mass1, mass2, video_path)
+    with open(flag_path, "w") as f:
+        f.write("done")
 
 @app.route("/run-simulation", methods=["POST"])
 def run_simulation():
@@ -43,6 +48,27 @@ def run_simulation():
     
     return render_template("loading.html")
 
+@app.route("/run-simulationtbp", methods=["POST"])
+def run_simulation():
+    position = request.form.get("position")
+    velocity = request.form.get("velocity")
+    mass1 = request.form.get("mass1")
+    mass2 = request.form.get("mass2")
+
+
+    if os.path.exists(video_path):
+        os.remove(video_path)
+
+    if os.path.exists(flag_path):
+        os.remove(flag_path)
+
+    thread = threading.Thread(
+        target=generate_videotbp,
+        args=(position, velocity, mass1, mass2, video_path)
+    )
+    thread.start()
+    
+    return render_template("loading.html")
 
 @app.route("/check_video")
 def check_video():

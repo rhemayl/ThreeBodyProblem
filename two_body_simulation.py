@@ -1,4 +1,4 @@
-def twobp(position, velocity, mass1, mass2, output_path = "static/video/NewTwoBodyProblem.mp4"):
+def twobp(position, velocity, mass1, mass2, video_path):
     #Importing important libraries
     import time
     import scipy as sci
@@ -84,7 +84,7 @@ def twobp(position, velocity, mass1, mass2, output_path = "static/video/NewTwoBo
     #v2=[V1,V2,0] #m/s
     #v3=[-2*V1,--2*V2,0]
 
-    if len(velocity) == 17:
+    if len(velocity) == 11:
         velocity = velocity.split(",")
         try:
             velocity = [float(n) for n in velocity]
@@ -339,7 +339,7 @@ def twobp(position, velocity, mass1, mass2, output_path = "static/video/NewTwoBo
     #To save animation to disk, enable this command
 
 
-    repeatanim.save(output_path, writer=writer)
+    repeatanim.save(video_path, writer=writer)
     T2 = time.time()
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 

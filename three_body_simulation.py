@@ -360,4 +360,4 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
     return "Simulation Loaded!"
 
-
+threebp("","",None,None,None,output_path="static/akfjk.mp4")
