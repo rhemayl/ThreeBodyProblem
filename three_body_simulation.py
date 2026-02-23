@@ -64,8 +64,8 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
 
     #Convert pos vectors to arrays
-    if len(position) == 17:
-        values = position.split(",")
+    values = position.split(",")
+    if len(position) == 9:
         try:
             values = [float(n) for n in values]
             r1=values[0:3]
@@ -99,8 +99,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     v1=[0.02,0.02,0.02] #m/s
     v2=[-0.05,0,-0.1] #m/s
     v3=[0,-0.03,0]
-    if len(velocity) == 17:
-        velocity = velocity.split(",")
+
+    velocity = velocity.split(",")
+    if len(velocity) == 9:
         try:
             velocity = [float(n) for n in velocity]
             v1=velocity[0:3]
