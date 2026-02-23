@@ -359,5 +359,3 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     print(f"DEBUG: Time taken: {round(T2-T1, 3)}s")
 
     return "Simulation Loaded!"
-
-threebp("","",None,None,None,output_path="static/akfjk.mp4")
