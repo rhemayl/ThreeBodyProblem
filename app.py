@@ -49,7 +49,7 @@ def run_simulation():
     return render_template("loading.html")
 
 @app.route("/run-simulationtbp", methods=["POST"])
-def run_simulation():
+def run_simulationtbp():
     position = request.form.get("position")
     velocity = request.form.get("velocity")
     mass1 = request.form.get("mass1")
@@ -69,6 +69,10 @@ def run_simulation():
     thread.start()
     
     return render_template("loading.html")
+
+@app.route("/twobody")
+def twobody():
+    return render_template("tbp.html")
 
 @app.route("/check_video")
 def check_video():

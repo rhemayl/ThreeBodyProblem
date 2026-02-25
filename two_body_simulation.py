@@ -54,8 +54,8 @@ def twobp(position, velocity, mass1, mass2, video_path):
     #r3 = input("set body 3 starting position (x,y,z): ").split(",")
 
     #Convert pos vectors to arrays
-    position  = position.split(",")
-    if len(position) == 6:
+    if len(position) == 11:
+        position = position.split(",")
         try:
             position = [float(n) for n in position]
             r1=position[0:3]
