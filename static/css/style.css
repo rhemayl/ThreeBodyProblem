@@ -1,6 +1,15 @@
+html, body { height: 100%; min-height: 100vh; }
+
 body {
     margin: 0;
-    padding: 0;
+    padding: 24px;
+    background-color: rgb(0, 0, 52);
+    color: white;
+    font-family: 'Afacad', Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    background-image: url('starry_sky3.jpg');
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .stack-area {
@@ -10,25 +19,39 @@ body {
     display: flex;
 }
 
+.navbar {
+    flex-basis: 50%;
+    position: fixed;
+    margin: inherit;
+    overflow: hidden;
+}
+
+.navbar {
+
+}
+
 .animation {
     flex-basis: 50%;
     height: 100vh;
-    position: sticky;
-    top: 0;
-    left: 0;
+    position: fixed;
+    margin: inherit;
+    top: 80px;
+    overflow: hidden;
 }
  
 .explanation {
     flex-basis:50%;
     height: 100vh;
-    position: sticky;
+    position: fixed;
     top: 0;
+    margin-left: 70%;
 }
 .card {
     width: 450px;
     height: 800px;
-    border: 2px solid #333;
-    background: white;
+    padding: 10px;
+    border: 2px solid #ffffff;
+    background: rgba(2, 0, 21, 0.865);
     position: absolute;
     top: calc(50% - 400px);
     left: calc(50% - 175px);
@@ -36,6 +59,100 @@ body {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    font-size: 15px;
+}
+
+h1 {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.button {
+    display: inline-block;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.84);
+    color: white;
+    padding: 7px 14px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-family: inherit;
+    font-size: inherit;
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    background-color: rgba(0, 0, 0, 0.148);
+}
+
+label, input {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+input {
+    border: white solid 1px;
+    background-color: transparent;
+    color: white;
+    margin: 0 10px;
+}
+
+.threebp_input {
+    width: 200px;
+}
+
+.twobp_input{
+    width: 133px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    align-items: center;
+}
+
+ul li {
+    float: none;
+}
+
+ul li form {
+    display: inline-block;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 30px;
+    margin-left: 0;
+    margin-right: 20px;
+    font-size: 25px;
+}
+
+ul li form button {
+    background-color: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.562);
+    cursor: pointer;
+    font-family: 'Azeret Mono', monospace;
+    font-size: inherit;
+}
+
+ul li form button:hover {
+    text-decoration: underline;
+}
+
+.small_p {
+    margin-top: 10px; 
+    width: 30vw;
+    font-size: 11px;
 }
 
 .away {

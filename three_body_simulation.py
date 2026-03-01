@@ -23,38 +23,47 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     TRACE_COLORS = ("cyan", "fuchsia", "lime")
     
     
-    # Non-Dimensionalisation
+    # Non-Dimensionalisation. Let's not do this
 
-    G=6.67408e-11 #N-m2/kg2
+    #G=6.67408e-11 #N-m2/kg2
+    G = 1
 
     #Reference quantities
-    m_nd=1.989e+30 #kg
-    r_nd=5.326e+12 #m
-    v_nd=30000 #m/s
-    t_nd=79.91*365.25*24*3600 #s
+    #m_nd=1.989e+30 #kg
+    #r_nd=5.326e+12 #m
+    #v_nd=30000 #m/s
+    #t_nd=79.91*365.25*24*3600 #s
 
     #Net constants
-    K1=G*t_nd*m_nd/(r_nd**2*v_nd)
-    K2=v_nd*t_nd/r_nd
+    #K1=G*t_nd*m_nd/(r_nd**2*v_nd)
+    #K2=v_nd*t_nd/r_nd
+    K1 = 1
+    K2 = 1
 
-    #Define masses
-    #m1=G #Star 1
-    #m2=G #Star 2
-    #m3=G #Star 3
+    # Default values if user does not input any values
+    initial_masses = (1, 1, 0.6)
+    initial_positions = ([-1, 0, 0], 
+                         [1, 0, 0], 
+                         [0, 0, 0.723794540561745])
+    initial_velocities = ([0.2174530971365, -0.240235097321237, 0.480721353013616], 
+                      [0.2174530971365, -0.240235097321237, -0.480721353013616], 
+                      [-0.7248436571216667, 0.8007836577374566, 0])
+    pad = 1.25
 
+    HOW_LONG = 10 #seconds
+    
     if mass1:
         m1 = float(mass1)
     else: 
-        m1=1.1 
+        m1=initial_masses[0]
     if mass2:
         m2 = float(mass2)
     else: 
-        m2=0.907
-    
+        m2=initial_masses[1]
     if mass3:
         m3 = float(mass3)
     else: 
-        m3=1.425
+        m3=initial_masses[2]
 
     #r1 = input("set body 1 starting position (x,y,z): ").split(",")
     #r2 = input("set body 2 starting position (x,y,z): ").split(",")
@@ -72,9 +81,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         except:
             return "Please enter exactly 9 comma-separated numbers."
     elif len(values) == 1:
-        r1=[-0.5,1,0] #m
-        r2=[0.5,0,0.5] #m
-        r3=[0.2,1,1.5]
+        r1=initial_positions[0]
+        r2=initial_positions[1]
+        r3=initial_positions[2]
     else:
         return "Please enter exactly 9 comma-separated numbers."
 
@@ -94,9 +103,6 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     #v2=[V1,V2,0] #m/s
     #v3=[-2*V1,--2*V2,0]
 
-    v1=[0.02,0.02,0.02] #m/s
-    v2=[-0.05,0,-0.1] #m/s
-    v3=[0,-0.03,0]
     velocity = velocity.split(",")
     if len(velocity) == 9:
         
@@ -108,9 +114,9 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         except:
             return "Please enter exactly 9 comma-separated numbers."
     elif len(velocity) == 1:
-        v1=[0.02,0.02,0.02] #m/s
-        v2=[-0.05,0,-0.1] #m/s
-        v3=[0,-0.03,0]
+        v1=initial_velocities[0]
+        v2=initial_velocities[1]
+        v3=initial_velocities[2]
     else:
         return "Please enter exactly 9 comma-separated numbers."
 
@@ -123,7 +129,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     v_com=(m1*v1+m2*v2+m3*v3)/(m1+m2+m3)
 
 
-    def ThreeBodyEquations(w,t,G,m1,m2):
+    def ThreeBodyEquations(w,t,G,m1,m2,m3):
         # Unpack variables (views, cheap)
         r1 = w[0:3]
         r2 = w[3:6]
@@ -168,7 +174,6 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
         return derivs
 
-    HOW_LONG = 10 #seconds
     #Package initial parameters
     init_params=np.array([r1,r2,r3,v1,v2,v3]) #Package initial parameters into one size-18 array
     init_params=init_params.flatten() #Flatten the array to make it 1D
@@ -177,7 +182,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
     #Run the ODE solver
     import scipy.integrate
-    three_body_sol=scipy.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2))
+    three_body_sol=scipy.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2,m3))
 
 
     #Store the position solutions into three distinct arrays
@@ -208,6 +213,18 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     r1_sol_anim=r1_sol[::stride,:].copy()
     r2_sol_anim=r2_sol[::stride,:].copy()
     r3_sol_anim=r3_sol[::stride,:].copy()
+
+    # compute the centre-of-mass trajectory and centred coordinates
+    # so that both framing modes can reference them
+    r_com_sol = (
+        m1 * r1_sol_anim +
+        m2 * r2_sol_anim +
+        m3 * r3_sol_anim
+    ) / (m1 + m2 + m3)
+
+    r1c = r1_sol_anim - r_com_sol
+    r2c = r2_sol_anim - r_com_sol
+    r3c = r3_sol_anim - r_com_sol
 
     #Set initial marker for planets, that is, blue,red and green circles at the initial positions
     #head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color=MARKER_COLORS[0],marker="o",s=80,label="Star 1")]
@@ -263,20 +280,21 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         
         if FRAMING_METHOD == "d":
             start = max(0, i - SCALING_WINDOW)
+            # subtract centre-of-mass positions so the window is centred
             xs = np.concatenate([
-            r1_sol_anim[start:i+1,0],
-            r2_sol_anim[start:i+1,0],
-            r3_sol_anim[start:i+1,0],
+                r1_sol_anim[start:i+1,0] - r_com_sol[start:i+1,0],
+                r2_sol_anim[start:i+1,0] - r_com_sol[start:i+1,0],
+                r3_sol_anim[start:i+1,0] - r_com_sol[start:i+1,0],
             ])
             ys = np.concatenate([
-                r1_sol_anim[start:i+1,1],
-                r2_sol_anim[start:i+1,1],
-                r3_sol_anim[start:i+1,1],
+                r1_sol_anim[start:i+1,1] - r_com_sol[start:i+1,1],
+                r2_sol_anim[start:i+1,1] - r_com_sol[start:i+1,1],
+                r3_sol_anim[start:i+1,1] - r_com_sol[start:i+1,1],
             ])
             zs = np.concatenate([
-                r1_sol_anim[start:i+1,2],
-                r2_sol_anim[start:i+1,2],
-                r3_sol_anim[start:i+1,2],
+                r1_sol_anim[start:i+1,2] - r_com_sol[start:i+1,2],
+                r2_sol_anim[start:i+1,2] - r_com_sol[start:i+1,2],
+                r3_sol_anim[start:i+1,2] - r_com_sol[start:i+1,2],
             ])
 
             ax.set_xlim(xs.min()*(1-SCALING_PADDING), xs.max()*(1+SCALING_PADDING))
@@ -302,15 +320,8 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     # anim_2b = animation.FuncAnimation(fig,Animate_2b,frames=1000,interval=5,repeat=False,blit=False,fargs=(h1,h2))
 
     # PADDING APPROACH
-    r_com_sol = (
-        m1*r1_sol_anim +
-        m2*r2_sol_anim +
-        m3*r3_sol_anim
-    ) / (m1 + m2 + m3)
-
-    r1c = r1_sol_anim - r_com_sol
-    r2c = r2_sol_anim - r_com_sol
-    r3c = r3_sol_anim - r_com_sol
+    # (centre-of-mass trajectory and centred coordinates were
+    # computed earlier to support dynamic framing)
 
     if FRAMING_METHOD == "c":
         
@@ -357,11 +368,8 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         all_y = np.concatenate([r1c[:,1], r2c[:,1], r3c[:,1]])
         all_z = np.concatenate([r1c[:,2], r2c[:,2], r3c[:,2]])
 
-        mavg = (m1 + m2 + m3) / 3
-        dm1, dm2, dm3 = abs(m1 - mavg), abs(m2 - mavg), abs(m3 - mavg)
-        maxdm = max(dm1, dm2, dm3) / 0.2
-        low, high = maxdm, 100-maxdm   # tighten if needed
-        pad = 1.2
+        # Use fixed percentiles to capture most of the data while ignoring extreme outliers
+        low, high = 0.5, 99.5
 
         xmin, xmax = np.percentile(all_x, [low, high])
         ymin, ymax = np.percentile(all_y, [low, high])

@@ -1,9 +1,9 @@
 function checkVideo() {
-    fetch("/check_video")
+    fetch("/check_video3bp")
         .then(response => response.json())
         .then(data => {
             if (data.ready) {
-                window.location.href = "/result";
+                window.location.href = "/result3bp";
             }
          });
 }

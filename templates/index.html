@@ -1,87 +1,92 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Three Body Problem</title>
+    <title>Three-Body Problem Simulation</title>
 <link rel="stylesheet" href="/static/css/style.css">
+<link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'> 
+<link href='https://fonts.googleapis.com/css?family=Azeret Mono' rel='stylesheet'>
 </head>
 
 <body>
     <div class="stack-area">
-        <div class="animation">
-            <form action ="/twobody">
-            <button type="submit">2-Body Simulation</button>
-            </form>
+        <div>
+            <div class="navbar">
+                <ul>
+                    <li><form action ="/threebody">
+                    <button style="color: white" type="submit">3-Body Simulation</button>
+                    </form></li>
+                    <li><form action ="/twobody">
+                    <button type="submit">2-Body Simulation</button>
+                    </form></li>
+                    <li><form action ="/about">
+                    <button type="submit">About</button>
+                    </form></li>
+                </ul>
+            </div>
+            <div class="animation">
 
-            <form action="/run-simulation" method="post">
-            <label for="values">Starting positions:</label>
-            <input type="text" name="position" id="position" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
-            <br><br>
+                <form action="/run-simulation3bp" method="post">
+                <label for="values">Starting positions:</label>
+                <input type="text" class="threebp_input" name="position" id="position" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
+                <br><br>
 
-            <label for="values">Starting velocities:</label>
-            <input type="text" name="velocity" id="velocity" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
-            <br><br>
+                <label for="values">Starting velocities:</label>
+                <input type="text" class="threebp_input" name="velocity" id="velocity" placeholder="x1,y1,z1,x2,y2,z2,x3,y3,z3">
+                <br><br>
 
 
-            <label for="mass1">Mass 1:</label>
-            <input type="range" id="mass1" name="mass1" min="0.01" max="2" step="0.01" value="1">
-            <br>
+                <label for="mass1">Mass 1:</label>
+                <input type="range" id="mass1" name="mass1" min="0.01" max="2" step="0.01" value="1">
+                <br>
 
-            <label for="mass2">Mass 2:</label>
-            <input type="range" id="mass2" name="mass2" min="0.01" max="2" step="0.01" value="1">
-            <br>
+                <label for="mass2">Mass 2:</label>
+                <input type="range" id="mass2" name="mass2" min="0.01" max="2" step="0.01" value="1">
+                <br>
 
-            <label for="mass3">Mass 3:</label>
-            <input type="range" id="mass3" name="mass3" min="0.01" max="2" step="0.01" value="1">
-            <br>
+                <label for="mass3">Mass 3:</label>
+                <input type="range" id="mass3" name="mass3" min="0.01" max="2" step="0.01" value="1">
+                <br>
+                
+                <p class = "small_p">For best results, use positions between -2 and 2 for each coordinate, and velocities between -1 and 1. Please note that it is difficult to find starting values which produce meaningful results.</p>
 
-            <button type="submit">Run 3-Body Simulation</button>
+                <button class="button" type="submit">Run 3-Body Simulation</button>
 
-            </form>
-            
+                </form>
 
-            {% if video_url %}
-            <video width="600" controls>
-                <source src="{{ video_url }}?{{ cache_bust }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <p>{{ message }}</p>
-            {% endif %} 
-        </div>
 
+                {% if video_url %}
+                <video width="600" controls>
+                    <source src="{{ video_url }}?{{ cache_bust }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p>{{ message }}</p>
+                {% endif %} 
+            </div>
+        </div>        
         <div class="explanation">
             <div class="card">
-                The Three Body Problem
-                <br>
-                The three body problem describes the motion of three bodies under mutual graviational interactions. This describes many situations in astronomy such as the motion of the Moon under the Sun and Earth's influence. 
-                <br>
-                While the two body system is solvable, the addition of a third body makes the mathematical equations too complex, meaning that there have been no known general solutions (a formula that can predict the future positions of all three bodies). 
-                It is an example of a chaotic system, also known as the "butterfly effect" meaning that while we are able to predict it's future states, any change in force or mass can drastically affect it's output, making calculations impossible. 
-                <br>
-                Many cases leads to one body being eliminated through ejection or collision, which can lead to a stable two body interaction. 
-                <br>
-                However, there are specific situations that have been discovered to produce a stable orbit that is known to be stable.
-                Another situation is as an Restricted three body problem, where one body is small enough that it can be simplified into a two body system.
+                <h1>The Three-Body Problem</h1>
+                <p>The Three-Body Problem describes the motion of three bodies under mutual gravitational interactions. This describes many situations in astronomy such as the motion of the Moon under the Sun and Earth's influence. </p>
+                <p>While the two body system is solvable, the addition of a third body makes the mathematical equations too complex, meaning that there have been no known general solutions (a formula that can predict the future positions of all three bodies based on the initial conditions). 
+                It is an example of a chaotic system, related to the <b>"butterfly effect"</b> - meaning that any change in force or mass, however small, can drastically affect the system's output. This makes the system unpredictable over long time periods. </p>
+                <p>Many cases leads to one body being eliminated through ejection or collision, which can lead to a stable two body interaction. </p>
+                <p>However, there are specific situations that have been discovered to produce three orbits that are known to be stable. These situations can be produced using precise starting conditions. In fact,some examples are shown on this website.</p>
+                <p>Another situation is a Restricted Three-Body Problem, where one body is small enough that it can be simplified into a two body system.</p>
 
             </div>
             <div class="card">
-                The Mathematics
-                <br>
-                The three body problem is calculated through taking the positions and velocities of three point masses, which is represented as masses, that orbit each other in space, and finding their trajectories using Newton's law of motion and universal gravitation.
-                <br>
-                The calculations of the three body problem can be given in terms of the equations vector positions \( r_i \) of three gravitationally interacting bodies of mass \( m_i \), where G is the gravitational constant.
-                <br>
-                By Newton's second law, the force exerted on each of the bodies is ma=F, or \[m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i\]
-                <br>
-                Under Newtonian Gravitation, the force on a pair of bodies is \[
+                <h1>The Mathematics</h1>
+                <p>The equations governing the Three-Body Problem are calculated through taking the positions and velocities of the three objects, which are represented as point masses, and finding their trajectories using Newton's laws of motion and universal gravitation.</p>
+                <p>The calculations of the three body problem can be given in terms of the equations vector positions \( r_i \) of three gravitationally interacting bodies of mass \( m_i \), where \( G \) is the Newtonian gravitational constant \(6.67408 \times 10^{-11}\).</p>
+                <p>By Newton's second law, the force exerted on each of the bodies is \( ma=F \), or \[m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i\]</p>
+                <p>Under Newtonian Gravitation, the force on a pair of bodies is \[
                 \mathbf{F}_{ij}
                 =
                 - G \frac{m_i m_j (\mathbf{r}_i - \mathbf{r}_j)}
                 {\left| \mathbf{r}_i - \mathbf{r}_j \right|^3}
-                \]
-                <br>
-                The resultsant force acting on any single body is the sum of the forces acting of the two other bodies: \[
+                \]</p>
+                <p>The resultant force acting on any single body is the sum of the forces acting of the two other bodies: \[
                 \mathbf{F}_1 = \mathbf{F}_{12} + \mathbf{F}_{13}
                 \]
 
@@ -91,23 +96,23 @@
 
                 \[
                 \mathbf{F}_3 = \mathbf{F}_{31} + \mathbf{F}_{32}
-                \]
-                <br>
-                    By putting the first equation into this, you get:
+                \]</p>
+                <p>Substituting in the equations for the forces gives us the Differential Equations that govern the Three-Body Problem:
                 \[
                 \begin{aligned}
-                \ddot{\mathbf{r}}_{1} &= -G m_2 \frac{\mathbf{r}_1 - \mathbf{r}_2}{|\mathbf{r}_1 - \mathbf{r}_2|^3} - G m_3 \frac{\mathbf{r}_1 - \mathbf{r}_3}{|\mathbf{r}_1 - \mathbf{r}_3|^3},\\
-                \ddot{\mathbf{r}}_{2} &= -G m_3 \frac{\mathbf{r}_2 - \mathbf{r}_3}{|\mathbf{r}_2 - \mathbf{r}_3|^3} - G m_1 \frac{\mathbf{r}_2 - \mathbf{r}_1}{|\mathbf{r}_2 - \mathbf{r}_1|^3},\\
-                \ddot{\mathbf{r}}_{3} &= -G m_1 \frac{\mathbf{r}_3 - \mathbf{r}_1}{|\mathbf{r}_3 - \mathbf{r}_1|^3} - G m_2 \frac{\mathbf{r}_3 - \mathbf{r}_2}{|\mathbf{r}_3 - \mathbf{r}_2|^3}.
+                \ddot{\mathbf{r}}_{1} &= -G m_2 \frac{\mathbf{r}_1 - \mathbf{r}_2}{|\mathbf{r}_1 - \mathbf{r}_2|^3} - G m_3 \frac{\mathbf{r}_1 - \mathbf{r}_3}{|\mathbf{r}_1 - \mathbf{r}_3|^3}\\
+                \ddot{\mathbf{r}}_{2} &= -G m_3 \frac{\mathbf{r}_2 - \mathbf{r}_3}{|\mathbf{r}_2 - \mathbf{r}_3|^3} - G m_1 \frac{\mathbf{r}_2 - \mathbf{r}_1}{|\mathbf{r}_2 - \mathbf{r}_1|^3}\\
+                \ddot{\mathbf{r}}_{3} &= -G m_1 \frac{\mathbf{r}_3 - \mathbf{r}_1}{|\mathbf{r}_3 - \mathbf{r}_1|^3} - G m_2 \frac{\mathbf{r}_3 - \mathbf{r}_2}{|\mathbf{r}_3 - \mathbf{r}_2|^3}
                 \end{aligned}
-                \]
-                Each of the vector equations have three dimensions and so can be converted into 9 equations that represent direction only in one axis
-
+                \]</p>
             </div>
             <div class="card">
-                The Code
+                <h1>The Code</h1>
+                <p>Each of the vector equations have three dimensions, and so they can be converted into 9 equations that represent direction only in one axis. Alternatively, we can use libraries such as NumPy to work with the original vector equations, as has been done in this simulation.</p>
+                <p>The code for this simulation is written in Python and uses libraries such as NumPy and Matplotlib to calculate and visualize the trajectories of the three bodies.</p>
+                <p>The code defines the initial conditions for the masses, positions, and velocities of the three bodies, and then uses numerical integration to solve the equations of motion over time. The resulting trajectories are then visualized using Matplotlib's animation capabilities.</p>
+                
             </div>
-            khjkjkjl
             </div>
         </div>
     </div>
