@@ -1,4 +1,3 @@
-#Importing important libraries
 import time
 import scipy as sci
 import matplotlib
@@ -13,10 +12,17 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     plt.style.use('dark_background')
     T1 = time.time()
 
-    FRAMING_METHOD = "c"
     #d: dynamic framing
     #a: autoscaling
     #c: constant frame
+    FRAMING_METHOD = "c"
+
+    #MARKER_COLORS = ("darkblue", "darkred", "darkgreen")
+    MARKER_COLORS = ("darkturquoise", "mediumorchid", "limegreen")
+    #TRACE_COLORS = ("mediumblue", "red", "green")
+    TRACE_COLORS = ("cyan", "fuchsia", "lime")
+    
+    
     # Non-Dimensionalisation
 
     G=6.67408e-11 #N-m2/kg2
@@ -58,7 +64,6 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     #Convert pos vectors to arrays
     values = position.split(",")
     if len(position) == 9:
-        
         try:
             values = [float(n) for n in values]
             r1=values[0:3]
@@ -119,33 +124,48 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
 
     def ThreeBodyEquations(w,t,G,m1,m2):
-        #Unpack all the variables from the array "w"
-        r1=w[:3]
-        r2=w[3:6]
-        r3=w[6:9]
-        v1=w[9:12]
-        v2=w[12:15]
-        v3=w[15:18]
+        # Unpack variables (views, cheap)
+        r1 = w[0:3]
+        r2 = w[3:6]
+        r3 = w[6:9]
+        v1 = w[9:12]
+        v2 = w[12:15]
+        v3 = w[15:18]
 
-        #Find out distances between the three bodies
-        r12=np.linalg.norm(r2-r1)
-        r13=np.linalg.norm(r3-r1)
-        r23=np.linalg.norm(r3-r2)
+        # Pairwise separation vectors
+        r12_vec = r2 - r1
+        r13_vec = r3 - r1
+        r23_vec = r3 - r2
 
-        #Define the derivatives according to the equations
-        dv1bydt=K1*m2*(r2-r1)/r12**3+K1*m3*(r3-r1)/r13**3
-        dv2bydt=K1*m1*(r1-r2)/r12**3+K1*m3*(r3-r2)/r23**3
-        dv3bydt=K1*m1*(r1-r3)/r13**3+K1*m2*(r2-r3)/r23**3
-        dr1bydt=K2*v1
-        dr2bydt=K2*v2
-        dr3bydt=K2*v3
+        # Distances (use small epsilon to avoid singular division)
+        eps = 1e-12
+        r12 = np.linalg.norm(r12_vec)
+        r13 = np.linalg.norm(r13_vec)
+        r23 = np.linalg.norm(r23_vec)
 
-        #Package the derivatives into one final size-18 array
-        r12_derivs=np.concatenate((dr1bydt,dr2bydt))
-        r_derivs=np.concatenate((r12_derivs,dr3bydt))
-        v12_derivs=np.concatenate((dv1bydt,dv2bydt))
-        v_derivs=np.concatenate((v12_derivs,dv3bydt))
-        derivs=np.concatenate((r_derivs,v_derivs))
+        inv_r12_3 = 1.0 / (r12**3 + eps)
+        inv_r13_3 = 1.0 / (r13**3 + eps)
+        inv_r23_3 = 1.0 / (r23**3 + eps)
+
+        # Accelerations (vectorized algebra, fewer temporaries)
+        dv1bydt = K1 * (m2 * r12_vec * inv_r12_3 + m3 * r13_vec * inv_r13_3)
+        dv2bydt = K1 * (m1 * (-r12_vec) * inv_r12_3 + m3 * r23_vec * inv_r23_3)
+        dv3bydt = K1 * (m1 * (-r13_vec) * inv_r13_3 + m2 * (-r23_vec) * inv_r23_3)
+
+        # Position derivatives
+        dr1bydt = K2 * v1
+        dr2bydt = K2 * v2
+        dr3bydt = K2 * v3
+
+        # Package derivatives into preallocated array (avoid concatenate overhead)
+        derivs = np.empty(18, dtype=float)
+        derivs[0:3] = dr1bydt
+        derivs[3:6] = dr2bydt
+        derivs[6:9] = dr3bydt
+        derivs[9:12] = dv1bydt
+        derivs[12:15] = dv2bydt
+        derivs[15:18] = dv3bydt
+
         return derivs
 
     HOW_LONG = 10 #seconds
@@ -157,7 +177,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
     #Run the ODE solver
     import scipy.integrate
-    three_body_sol=sci.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2))
+    three_body_sol=scipy.integrate.odeint(ThreeBodyEquations,init_params,time_span,args=(G,m1,m2))
 
 
     #Store the position solutions into three distinct arrays
@@ -166,27 +186,12 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     r3_sol=three_body_sol[:,6:9]
 
 
-    #Plot the orbits of the three bodies
-    fig=plt.figure(figsize=(15,15))
-    ax=fig.add_subplot(111,projection="3d")
-
+    # Compute marker sizes once (avoid building a separate static figure)
     mmin = min(m1, m2, m3)
 
     s1 = 60 * m1 / mmin
     s2 = 60 * m2 / mmin
     s3 = 60 * m3 / mmin
-
-    ax.plot(r1_sol[:,0],r1_sol[:,1],r1_sol[:,2],color="mediumblue")
-    ax.plot(r2_sol[:,0],r2_sol[:,1],r2_sol[:,2],color="red")
-    ax.plot(r3_sol[:,0],r3_sol[:,1],r3_sol[:,2],color="green")
-    ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color="darkblue",marker="o",s=s1,label="Star 1")
-    ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color="darkred",marker="o",s=s2,label="Star 2")
-    ax.scatter(r3_sol[-1,0],r3_sol[-1,1],r3_sol[-1,2],color="darkgreen",marker="o",s=s3,label="Star 3")
-    ax.set_xlabel("x-coordinate",fontsize=14)
-    ax.set_ylabel("y-coordinate",fontsize=14)
-    ax.set_zlabel("z-coordinate",fontsize=14)
-    ax.set_title("Visualization of orbits of stars in a 3-body system\n",fontsize=14)
-    ax.legend(loc="upper left",fontsize=14)
 
 
     #Animate the orbits of the three bodies
@@ -205,17 +210,17 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     r3_sol_anim=r3_sol[::stride,:].copy()
 
     #Set initial marker for planets, that is, blue,red and green circles at the initial positions
-    #head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color="darkblue",marker="o",s=80,label="Star 1")]
-    #head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color="darkred",marker="o",s=80,label="Star 2")]
-    #head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color="darkgreen",marker="o",s=80,label="Star 3")]
+    #head1=[ax.scatter(r1_sol_anim[0,0],r1_sol_anim[0,1],r1_sol_anim[0,2],color=MARKER_COLORS[0],marker="o",s=80,label="Star 1")]
+    #head2=[ax.scatter(r2_sol_anim[0,0],r2_sol_anim[0,1],r2_sol_anim[0,2],color=MARKER_COLORS[1],marker="o",s=80,label="Star 2")]
+    #head3=[ax.scatter(r3_sol_anim[0,0],r3_sol_anim[0,1],r3_sol_anim[0,2],color=MARKER_COLORS[2],marker="o",s=80,label="Star 3")]
     
-    head1=ax.scatter([],[],[],color="darkblue",marker="o",s=s1,label="Star 1")
-    head2=ax.scatter([],[],[],color="darkred",marker="o",s=s2,label="Star 2")
-    head3=ax.scatter([],[],[],color="darkgreen",marker="o",s=s3,label="Star 3")
+    head1=ax.scatter([],[],[],color=MARKER_COLORS[0],marker="o",s=s1,label="Star 1")
+    head2=ax.scatter([],[],[],color=MARKER_COLORS[1],marker="o",s=s2,label="Star 2")
+    head3=ax.scatter([],[],[],color=MARKER_COLORS[2],marker="o",s=s3,label="Star 3")
 
-    trace1, = ax.plot([], [], [], color = "mediumblue")
-    trace2, = ax.plot([], [], [], color = "red")
-    trace3, = ax.plot([], [], [], color = "green")
+    trace1, = ax.plot([], [], [], color = TRACE_COLORS[0])
+    trace2, = ax.plot([], [], [], color = TRACE_COLORS[1])
+    trace3, = ax.plot([], [], [], color = TRACE_COLORS[2])
     #Create a function Animate that changes plots every frame (here "i" is the frame number)
     
     SCALING_WINDOW = 100     # frames to consider
@@ -227,14 +232,14 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         #head3[0].remove()
 
         #Plot the orbits (every iteration we plot from initial position to the current position)
-        #trace1=ax.plot(r1_sol_anim[:i,0],r1_sol_anim[:i,1],r1_sol_anim[:i,2],color="mediumblue")
-        #trace2=ax.plot(r2_sol_anim[:i,0],r2_sol_anim[:i,1],r2_sol_anim[:i,2],color="red")
-        #trace3=ax.plot(r3_sol_anim[:i,0],r3_sol_anim[:i,1],r3_sol_anim[:i,2],color="green")
+        #trace1=ax.plot(r1_sol_anim[:i,0],r1_sol_anim[:i,1],r1_sol_anim[:i,2],color=TRACE_COLORS[0])
+        #trace2=ax.plot(r2_sol_anim[:i,0],r2_sol_anim[:i,1],r2_sol_anim[:i,2],color=TRACE_COLORS[1])
+        #trace3=ax.plot(r3_sol_anim[:i,0],r3_sol_anim[:i,1],r3_sol_anim[:i,2],color=TRACE_COLORS[2])
 
         #Plot the current markers
-        #head1[0]=ax.scatter(r1_sol_anim[i-1,0],r1_sol_anim[i-1,1],r1_sol_anim[i-1,2],color="darkblue",marker="o",s=100)
-        #head2[0]=ax.scatter(r2_sol_anim[i-1,0],r2_sol_anim[i-1,1],r2_sol_anim[i-1,2],color="darkred",marker="o",s=100)
-        #head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color="darkgreen",marker="o",s=100)
+        #head1[0]=ax.scatter(r1_sol_anim[i-1,0],r1_sol_anim[i-1,1],r1_sol_anim[i-1,2],color=MARKER_COLORS[0],marker="o",s=100)
+        #head2[0]=ax.scatter(r2_sol_anim[i-1,0],r2_sol_anim[i-1,1],r2_sol_anim[i-1,2],color=MARKER_COLORS[1],marker="o",s=100)
+        #head3[0]=ax.scatter(r3_sol_anim[i-1,0],r3_sol_anim[i-1,1],r3_sol_anim[i-1,2],color=MARKER_COLORS[2],marker="o",s=100)
         trace1.set_data(r1_sol_anim[:i,0], r1_sol_anim[:i,1])
         trace1.set_3d_properties(r1_sol_anim[:i,2])
         trace2.set_data(r2_sol_anim[:i,0], r2_sol_anim[:i,1])
@@ -302,11 +307,16 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         m2*r2_sol_anim +
         m3*r3_sol_anim
     ) / (m1 + m2 + m3)
+
+    r1c = r1_sol_anim - r_com_sol
+    r2c = r2_sol_anim - r_com_sol
+    r3c = r3_sol_anim - r_com_sol
+
     if FRAMING_METHOD == "c":
         
-        all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
-        all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
-        all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
+        #all_x = np.concatenate((r1_sol_anim[:,0], r2_sol_anim[:,0], r3_sol_anim[:,0]))
+        #all_y = np.concatenate((r1_sol_anim[:,1], r2_sol_anim[:,1], r3_sol_anim[:,1]))
+        #all_z = np.concatenate((r1_sol_anim[:,2], r2_sol_anim[:,2], r3_sol_anim[:,2]))
 #
         #pad = 0.2  # PADDING factor
         #ax.set_xlim(all_x.min()*(1+pad), all_x.max()*(1+pad))
@@ -325,22 +335,41 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         #ax.set_zlim(zmin*(1-pad), zmax*(1+pad))
 
         # Distances from center of mass
-        d1 = np.linalg.norm(r1_sol_anim - r_com_sol, axis=1)
-        d2 = np.linalg.norm(r2_sol_anim - r_com_sol, axis=1)
-        d3 = np.linalg.norm(r3_sol_anim - r_com_sol, axis=1)
+        #d1 = np.linalg.norm(r1_sol_anim - r_com_sol, axis=1)
+        #d2 = np.linalg.norm(r2_sol_anim - r_com_sol, axis=1)
+        #d3 = np.linalg.norm(r3_sol_anim - r_com_sol, axis=1)
+#
+        ## Robust extent: ignore extreme outliers
+        #max_extent = np.percentile(
+        #    np.concatenate([d1, d2, d3]),
+        #    95
+        #)
 
-        # Robust extent: ignore extreme outliers
-        max_extent = np.percentile(
-            np.concatenate([d1, d2, d3]),
-            95
-        )
+        #pad = 1.2
+        #L = max_extent * pad
+#
+        #ax.set_xlim(-L, L)
+        #ax.set_ylim(-L, L)
+        #ax.set_zlim(-L, L)
+#
+        #ax.set_box_aspect((1, 1, 1))
+        all_x = np.concatenate([r1c[:,0], r2c[:,0], r3c[:,0]])
+        all_y = np.concatenate([r1c[:,1], r2c[:,1], r3c[:,1]])
+        all_z = np.concatenate([r1c[:,2], r2c[:,2], r3c[:,2]])
 
+        mavg = (m1 + m2 + m3) / 3
+        dm1, dm2, dm3 = abs(m1 - mavg), abs(m2 - mavg), abs(m3 - mavg)
+        maxdm = max(dm1, dm2, dm3) / 0.2
+        low, high = maxdm, 100-maxdm   # tighten if needed
         pad = 1.2
-        L = max_extent * pad
 
-        ax.set_xlim(-L, L)
-        ax.set_ylim(-L, L)
-        ax.set_zlim(-L, L)
+        xmin, xmax = np.percentile(all_x, [low, high])
+        ymin, ymax = np.percentile(all_y, [low, high])
+        zmin, zmax = np.percentile(all_z, [low, high])
+
+        ax.set_xlim(xmin*pad, xmax*pad)
+        ax.set_ylim(ymin*pad, ymax*pad)
+        ax.set_zlim(zmin*pad, zmax*pad)
 
         ax.set_box_aspect((1, 1, 1))
 

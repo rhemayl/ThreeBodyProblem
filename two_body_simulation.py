@@ -1,21 +1,21 @@
-def twobp(position, velocity, mass1, mass2, video_path):
-    #Importing important libraries
-    import time
-    import scipy as sci
-    import matplotlib
-    import matplotlib.pyplot as plt
-    matplotlib.use("Agg")
-    from matplotlib import animation
-    from mpl_toolkits.mplot3d import Axes3D
-    import numpy as np
+import time
+import scipy as sci
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use("Agg")
+from matplotlib import animation
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
 
+def twobp(position, velocity, mass1, mass2, video_path):
+    
     plt.style.use('dark_background')
     T1 = time.time()
 
     #d: dynamic framing
     #a: autoscaling
     #c: constant frame
-    FRAMING_METHOD = "d"
+    FRAMING_METHOD = "c"
     
     #MARKER_COLORS = ("darkblue", "darkred")
     MARKER_COLORS = ("darkturquoise", "mediumorchid")
@@ -88,8 +88,8 @@ def twobp(position, velocity, mass1, mass2, video_path):
         velocity = velocity.split(",")
         try:
             velocity = [float(n) for n in velocity]
-            v1=values[0:3]
-            v2=values[3:6]
+            v1=velocity[0:3]
+            v2=velocity[3:6]
         except:
             return "Please enter exactly 9 comma-separated numbers."
     elif len(velocity) == 0:
@@ -106,26 +106,32 @@ def twobp(position, velocity, mass1, mass2, video_path):
     v_com=(m1*v1+m2*v2)/(m1+m2)
 
     def ThreeBodyEquations(w,t,G,m1,m2):
-        #Unpack all the variables from the array "w"
-        r1=w[:3]
-        r2=w[3:6]
-        v1=w[6:9]
-        v2=w[9:12]
+        # Unpack variables
+        r1 = w[0:3]
+        r2 = w[3:6]
+        v1 = w[6:9]
+        v2 = w[9:12]
 
-        #Find out distances between the two bodies
-        r12=sci.linalg.norm(r2-r1)
+        # Separation vector and distance (protect against singular)
+        r12_vec = r2 - r1
+        eps = 1e-12
+        r12 = np.linalg.norm(r12_vec)
+        inv_r12_3 = 1.0 / (r12**3 + eps)
 
-        #Define the derivatives according to the equations
-        dv1bydt=K1*m2*(r2-r1)/r12**3
-        dv2bydt=K1*m1*(r1-r2)/r12**3
+        # Accelerations
+        dv1bydt = K1 * (m2 * r12_vec * inv_r12_3)
+        dv2bydt = K1 * (m1 * (-r12_vec) * inv_r12_3)
 
-        dr1bydt=K2*v1
-        dr2bydt=K2*v2
+        # Position derivatives
+        dr1bydt = K2 * v1
+        dr2bydt = K2 * v2
 
-        #Package the derivatives into one final size-12 array
-        r_derivs=np.concatenate((dr1bydt,dr2bydt))
-        v_derivs=np.concatenate((dv1bydt,dv2bydt))
-        derivs=np.concatenate((r_derivs,v_derivs))
+        # Package derivatives into preallocated array to avoid concatenations
+        derivs = np.empty(12, dtype=float)
+        derivs[0:3] = dr1bydt
+        derivs[3:6] = dr2bydt
+        derivs[6:9] = dv1bydt
+        derivs[9:12] = dv2bydt
         return derivs
 
     HOW_LONG = 10 #seconds
@@ -144,26 +150,11 @@ def twobp(position, velocity, mass1, mass2, video_path):
     r2_sol=three_body_sol[:,3:6]
 
 
-    #Plot the orbits of the three bodies
-    fig=plt.figure(figsize=(15,15))
-    ax=fig.add_subplot(111,projection="3d")
-
+    # Compute marker sizes once (avoid building a separate static figure)
     mmin = min(m1, m2)
 
     s1 = 60 * m1 / mmin
     s2 = 60 * m2 / mmin
-
-    ax.plot(r1_sol[:,0],r1_sol[:,1],r1_sol[:,2],color=TRACE_COLORS[0])
-    ax.plot(r2_sol[:,0],r2_sol[:,1],r2_sol[:,2],color=TRACE_COLORS[1])
-
-    ax.scatter(r1_sol[-1,0],r1_sol[-1,1],r1_sol[-1,2],color=MARKER_COLORS[0],marker="o",s=s1,label="Star 1")
-    ax.scatter(r2_sol[-1,0],r2_sol[-1,1],r2_sol[-1,2],color=MARKER_COLORS[1],marker="o",s=s2,label="Star 2")
-
-    ax.set_xlabel("x-coordinate",fontsize=14)
-    ax.set_ylabel("y-coordinate",fontsize=14)
-    ax.set_zlabel("z-coordinate",fontsize=14)
-    ax.set_title("Visualization of orbits of stars in a 2-body system\n",fontsize=14)
-    ax.legend(loc="upper left",fontsize=14)
 
 
     #Animate the orbits of the three bodies
