@@ -54,15 +54,15 @@ def twobp(position, velocity, mass1, mass2, video_path):
     #r3 = input("set body 3 starting position (x,y,z): ").split(",")
 
     #Convert pos vectors to arrays
-    if len(position) == 11:
-        position = position.split(",")
+    position = position.split(",")
+    if len(position) == 6:
         try:
             position = [float(n) for n in position]
             r1=position[0:3]
             r2=position[3:6]
         except:
             return "Please enter exactly 6 comma-separated numbers."
-    elif len(position) == 0:
+    elif len(position) == 1 and len(position[0]) == 0:
         #Define initial position vectors
         r1=[-0.5,1,0] #m
         r2=[0.5,0,0.5] #m
@@ -83,16 +83,15 @@ def twobp(position, velocity, mass1, mass2, video_path):
     #v1=[V1,V2,0] #m/s
     #v2=[V1,V2,0] #m/s
     #v3=[-2*V1,--2*V2,0]
-
-    if len(velocity) == 11:
-        velocity = velocity.split(",")
+    velocity = velocity.split(",")
+    if len(velocity) == 6: 
         try:
             velocity = [float(n) for n in velocity]
             v1=velocity[0:3]
             v2=velocity[3:6]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) == 0:
+    elif len(velocity) == 1 and len(velocity[0]) == 0:
         v1=[0.02,0.02,0.02] #m/s
         v2=[-0.05,0,-0.1] #m/s
     else:

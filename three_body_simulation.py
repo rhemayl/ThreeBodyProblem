@@ -80,7 +80,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             r3=values[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(values) == 1:
+    elif len(values) == 1 and len(values[0]) == 0:
         r1=initial_positions[0]
         r2=initial_positions[1]
         r3=initial_positions[2]
@@ -113,7 +113,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             v3=velocity[6:9]
         except:
             return "Please enter exactly 9 comma-separated numbers."
-    elif len(velocity) == 1:
+    elif len(velocity) == 1  and len(velocity[0]) == 0:
         v1=initial_velocities[0]
         v2=initial_velocities[1]
         v3=initial_velocities[2]
