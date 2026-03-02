@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'> 
+<link href='https://fonts.googleapis.com/css?family=Azeret Mono' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li><form action ="/threebody">
+            <button type="submit">3-Body Simulation</button>
+            </form></li>
+            <li><form action ="/twobody">
+            <button type="submit">2-Body Simulation</button>
+            </form></li>
+            <li><form action ="/about">
+            <button style="color: white" type="submit">About</button>
+            </form></li>
+        </ul>
+    </div>
+    
+    <div class="animation">
+        <span style="font-size: 200px; color: rgba(0, 255, 255, 0.67);">三</span><span style="font-size: 200px; margin-left: -120px; color: rgba(255, 0, 255, 0.67);">体</span>
+        <h1 style="margin-top: 50px">About This Project</h1>
+        <p>This project is a web application that simulates the three-body problem and the two-body problem. The three-body problem is a famous problem in physics and mathematics that describes the motion of three celestial bodies under their mutual gravitational attraction. The two-body problem is a simpler version of the three-body problem that describes the motion of two celestial bodies under their mutual gravitational attraction.</p>
+        <p>The simulations are created using Python and the Flask web framework. The videos are generated using Matplotlib and FFmpeg. The user can input the initial positions, velocities, and masses of the bodies to see how they evolve over a time of 10 seconds.</p>
+        <p>This project is intended for educational purposes and to provide an interactive way for people to learn about the three-body problem and the two-body problem.</p>
+        <p style="font-style: italic;">Created by Rhema Wen and Vincent Ji for the Westminster School C2 Project, 2026</p>
+    </div>
+    <div class="animation">
+        <img src="../static/TransparentThreeBodyProblem.gif" alt="Three body problem logo" style="width: 600px; margin-left: -200px; margin-top: -80px;">
+    </div>
+</body>

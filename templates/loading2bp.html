@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="/static/css/style.css">
+<link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'> 
+<link href='https://fonts.googleapis.com/css?family=Azeret Mono' rel='stylesheet'>
+<head>
+    <title>Generating Video</title>
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li><form action ="/threebody">
+            <button type="submit">3-Body Simulation</button>
+            </form></li>
+            <li><form action ="/twobody">
+            <button type="submit">2-Body Simulation</button>
+            </form></li>
+            <li><form action ="/about">
+            <button type="submit">About</button>
+            </form></li>
+        </ul>
+    </div>
+    <div class="animation">
+        <span style="font-size: 200px; color: rgba(0, 255, 255, 0.67);">三</span><span style="font-size: 200px; margin-left: -120px; color: rgba(255, 0, 255, 0.67);">体</span>
+        <h1 style="margin-top: 50px">Creating 2-Body Problem simulation... please wait (estimated time: 20-30 seconds)</h1>
+    </div>
+    <div class="animation">
+        <img src="../static/TransparentThreeBodyProblem.gif" alt="Three body problem logo" style="width: 600px; margin-left: -200px; margin-top: -80px;">
+    </div>
+    <script src="/static/js/loading2bp.js"></script>
+</body>
+
+</html>
