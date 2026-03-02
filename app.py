@@ -104,6 +104,10 @@ def threebody():
 def twobody():
     return render_template("tbp.html")
 
+@app.route("/gallery")
+def gallery():
+    return render_template("gallery.html")
+
 @app.route("/about")
 def about():
     return render_template("about.html")

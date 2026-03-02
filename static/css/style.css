@@ -155,6 +155,31 @@ ul li form button:hover {
     font-size: 11px;
 }
 
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: inherit;
+    margin-top: 150px;
+}
+
+.gallery-item {
+  margin: 5px;
+  border: 1px solid #ccc;
+  width: 180px;
+  padding-left: 7px;
+}
+
+.gallery-item video {
+  width: 100%;
+  height: auto;
+}
+
+.gallery-item div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
 .away {
     transform-origin: bottom left;
 }

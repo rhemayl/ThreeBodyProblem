@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'> 
+<link href='https://fonts.googleapis.com/css?family=Azeret Mono' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li><form action ="/threebody">
+            <button type="submit">3-Body</button>
+            </form></li>
+            <li><form action ="/twobody">
+            <button type="submit">2-Body</button>
+            </form></li>
+            <li><form action ="/gallery">
+            <button style="color: white" type="submit">Gallery</button>
+            </form></li>
+            <li><form action ="/about">
+            <button type="submit">About</button>
+            </form></li>
+        </ul>
+    </div>
+
+
+    <div class="animation" style="position: absolute;">
+        <p>The following videos were generated using our code, and are completely reproducible. However, in some case we have adjusted the framing and video length to make for a better demonstration. Please double click any video to go full screen.</p>
+    </div>
+        
+    <div class="gallery">
+        <div class="gallery-item">
+            <video controls>
+                <source src="../static/cool_videos/tangle_then_shoot_out.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p>1. 3BP Chaotic</p>
+        </div>
+        <div class="gallery-item">
+            <video controls>
+                <source src="../static/cool_videos/chaotic_with_spirals.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p>2. 3BP Chaotic</p>
+        </div>
+        
+    </div>
+</body> 
+</html>
