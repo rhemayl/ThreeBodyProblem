@@ -5,6 +5,7 @@
     <title>Three-Body Problem Simulation</title>
 <link rel="stylesheet" href="/static/css/style.css">
 <link href='https://fonts.googleapis.com/css?family=Afacad' rel='stylesheet'> 
+<link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon.png">
 <link href='https://fonts.googleapis.com/css?family=Azeret Mono' rel='stylesheet'>
 </head>
 
@@ -111,9 +112,14 @@
             </div>
             <div class="card">
                 <h1>The Code</h1>
-                <p>Each of the vector equations have three dimensions, and so they can be converted into 9 equations that represent direction only in one axis. Alternatively, we can use libraries such as NumPy to work with the original vector equations, as has been done in this simulation.</p>
-                <p>The code for this simulation is written in Python and uses libraries such as NumPy and Matplotlib to calculate and visualize the trajectories of the three bodies.</p>
-                <p>The code defines the initial conditions for the masses, positions, and velocities of the three bodies, and then uses numerical integration to solve the equations of motion over time. The resulting trajectories are then visualized using Matplotlib's animation capabilities.</p>
+                <p>The code for this simulation is written in Python and uses the NumPy and Matplotlib libraries which can calculate and animate the trajectories of the three bodies to create the simulation.</p>
+                <p>Each of the vector positions and velocities have three dimensions, and within the ThreeBodyEquations function, it is computed to calculate the gravitational accelerations of the masses.
+                    The accelerations are then integrated in each time frame to find the velocities, which is integrated to find the positions of the three bodies. </p>
+                <p>In the Animate function, each position in each time frame is plotted onto the graph.
+                    The animation is created by calculating and updating the positions in each time period. </p>
+                <p>The code uses non-dimensionalised gravity, using G=1 and scaled values of postion and velocities, this simplifies and lowers the load of the calculation, making video generation faster and also more stable.</p>
+                <p>The centre of mass of the system and its velocity is also found to rescale and recentre the simulation to fit within the frames of the video. The masses of each body are also represented by the size of each point in the video.</p>
+
                 
             </div>
             </div>
