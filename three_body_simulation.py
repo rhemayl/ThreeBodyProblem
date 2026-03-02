@@ -41,15 +41,16 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     K2 = 1
 
     # Default values if user does not input any values
-    initial_masses = (1, 1, 1)
+    initial_masses = (1, 1, 1.2)
     initial_positions = ([-1, 0, 0], 
-                         [0, 0, 0], 
-                         [1, 0, 0])
-    initial_velocities = ([0.306893, 0.125507, 0], 
-                          [-0.613786, -0.251014, 0], 
-                          [0.306893, 0.125507, 0])
-
-    HOW_LONG = 10 #seconds
+                         [1, 0, 0], 
+                         [0, 0, 0.442549765482064])
+    initial_velocities = ([0.633008677985192, 0.174857643377637, -0.260694954269266], 
+                          [0.633008677985192, 0.174857643377637, 0.260694954269266], 
+                          [-1.0550144633086533, -0.291429405629395, 0])
+    pad = 1.05
+    HOW_LONG = 30 #seconds
+    
     
     if mass1:
         m1 = float(mass1)
