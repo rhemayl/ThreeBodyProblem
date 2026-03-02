@@ -22,23 +22,23 @@ def twobp(position, velocity, mass1, mass2, video_path):
     #TRACE_COLORS = ("mediumblue", "red")
     TRACE_COLORS = ("cyan", "fuchsia")
 
-    # Non-Dimensionalisation
-    G=6.67408e-11 #N-m2/kg2
+    # Non-Dimensionalisation - removed
+    #G=6.67408e-11 #N-m2/kg2
+    G = 1
 
     #Reference quantities
-    m_nd=1.989e+30 #kg
-    r_nd=5.326e+12 #m
-    v_nd=30000 #m/s
-    t_nd=79.91*365.25*24*3600 #s
+    #m_nd=1.989e+30 #kg
+    #r_nd=5.326e+12 #m
+    #v_nd=30000 #m/s
+    #t_nd=79.91*365.25*24*3600 #s
 
     #Net constants
-    K1=G*t_nd*m_nd/(r_nd**2*v_nd)
-    K2=v_nd*t_nd/r_nd
+    #K1=G*t_nd*m_nd/(r_nd**2*v_nd)
+    #K2=v_nd*t_nd/r_nd
 
-    #Define masses
-    #m1=G #Star 1
-    #m2=G #Star 2
-    #m3=G #Star 3
+    K1 = 1
+    K2 = 1
+
 
     if mass1:
         m1 = float(mass1)
