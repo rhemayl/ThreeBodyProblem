@@ -33,17 +33,23 @@ def home():
     return render_template("index.html")
 
 
-def generate_video(position, velocity, mass1, mass2, mass3, video_path):
+def generate_video3bp(position, velocity, mass1, mass2, mass3, video_path):
     from three_body_simulation import threebp 
-    threebp(position, velocity, mass1, mass2, mass3, video_path)
+    try:
+        result = threebp(position, velocity, mass1, mass2, mass3, video_path)
+    except Exception as e:
+        result = "Error"
     with open(flag_path, "w") as f:
-        f.write("done")
+        f.write(result)
 
-def generate_videotbp(position, velocity, mass1, mass2, video_path):
+def generate_video2bp(position, velocity, mass1, mass2, video_path):
     from two_body_simulation import twobp 
-    twobp(position, velocity, mass1, mass2, video_path)
+    try:
+        result = twobp(position, velocity, mass1, mass2, video_path)
+    except Exception as e:
+        result = "Error"
     with open(flag_path, "w") as f:
-        f.write("done")
+        f.write(result)
 
 @app.route("/run-simulation3bp", methods=["POST"])
 def run_simulation3bp():
@@ -63,7 +69,7 @@ def run_simulation3bp():
     safe_remove_file(flag_path)
 
     process = multiprocessing.Process(
-        target=generate_video,
+        target=generate_video3bp,
         args=(position, velocity, mass1, mass2, mass3, video_path_3bp)
     )
     process.start()
@@ -88,7 +94,7 @@ def run_simulation2bp():
     safe_remove_file(flag_path)
 
     process = multiprocessing.Process(
-        target=generate_videotbp,
+        target=generate_video2bp,
         args=(position, velocity, mass1, mass2, video_path_2bp)
     )
     process.start()
@@ -114,13 +120,22 @@ def about():
 
 @app.route("/check_video3bp")
 def check_video3bp():
-    return {"ready": os.path.exists(flag_path) and os.path.exists(video_path_3bp)
-}
+    if not os.path.exists(flag_path):
+        return {"status": "Running", "ready": False}
+    status = "running"
+    with open(flag_path, "r") as f:
+        status = f.read().strip()
+    ready = status == "Simulation Loaded!" and os.path.exists(video_path_3bp)
+    return {"status": status, "ready": ready}
 
 @app.route("/check_video2bp")
 def check_video2bp():
-    return {"ready": os.path.exists(flag_path) and os.path.exists(video_path_2bp)
-}
+    if not os.path.exists(flag_path):
+        return {"status": "Running", "ready": False}
+    with open(flag_path, "r") as f:
+        status = f.read().strip()
+    ready = status == "Simulation Loaded!" and os.path.exists(video_path_2bp)
+    return {"status": status, "ready": ready}
 
 @app.route("/result3bp")
 def result3bp():

@@ -61,12 +61,14 @@ def twobp(position, velocity, mass1, mass2, video_path):
             r1=position[0:3]
             r2=position[3:6]
         except:
+            print("DEBUG: Error parsing inputs")
             return "Please enter exactly 6 comma-separated numbers."
     elif len(position) == 1 and len(position[0]) == 0:
         #Define initial position vectors
-        r1=[-0.5,1,0] #m
-        r2=[0.5,0,0.5] #m
+        r1=[-0.9,1,0] #m
+        r2=[0.7,0,0.2] #m
     else:
+        print("DEBUG: Error parsing inputs")
         return "Please enter exactly 6 comma-separated numbers."
 
     r1=np.array(r1)
@@ -90,12 +92,15 @@ def twobp(position, velocity, mass1, mass2, video_path):
             v1=velocity[0:3]
             v2=velocity[3:6]
         except:
-            return "Please enter exactly 9 comma-separated numbers."
+            print("DEBUG: Error parsing inputs")
+            return "Please enter exactly 6 comma-separated numbers."
     elif len(velocity) == 1 and len(velocity[0]) == 0:
-        v1=[0.02,0.02,0.02] #m/s
-        v2=[-0.05,0,-0.1] #m/s
+        v1=[0.5,0.02,0.2] #m/s
+        v2=[-0.3,0.3,-0.2] #m/s
+
     else:
-        return "Please enter exactly 9 comma-separated numbers."
+        print("DEBUG: Error parsing inputs")
+        return "Please enter exactly 6 comma-separated numbers."
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
@@ -111,7 +116,7 @@ def twobp(position, velocity, mass1, mass2, video_path):
         v1 = w[6:9]
         v2 = w[9:12]
 
-        # Separation vector and distance (protect against singular)
+        # Separation vector and distance (use epsilon to protect against singular division)
         r12_vec = r2 - r1
         eps = 1e-12
         r12 = np.linalg.norm(r12_vec)
@@ -291,9 +296,13 @@ def twobp(position, velocity, mass1, mass2, video_path):
         pad = 1.2
         L = max_extent * pad
 
-        ax.set_xlim(-L, L)
-        ax.set_ylim(-L, L)
-        ax.set_zlim(-L, L)
+        try:
+            ax.set_xlim(-L, L)
+            ax.set_ylim(-L, L)
+            ax.set_zlim(-L, L)
+        except ValueError:
+            print("DEBUG: ValueError setting limits!")
+            return "Error"
 
         ax.set_box_aspect((1, 1, 1))
 
