@@ -41,16 +41,16 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
     K2 = 1
 
     # Default values if user does not input any values
-    initial_masses = (1, 1, 0.6)
+    initial_masses = (1, 1, 1.2)
     initial_positions = ([-1, 0, 0], 
                          [1, 0, 0], 
-                         [0, 0, 0.723794540561745])
-    initial_velocities = ([0.2174530971365, -0.240235097321237, 0.480721353013616], 
-                      [0.2174530971365, -0.240235097321237, -0.480721353013616], 
-                      [-0.7248436571216667, 0.8007836577374566, 0])
-    pad = 1.25
-
+                         [0, 0, 0.442549765482064])
+    initial_velocities = ([0.633008677985192, 0.174857643377637, -0.260694954269266], 
+                          [0.633008677985192, 0.174857643377637, 0.260694954269266], 
+                          [-1.0550144633086533, -0.291429405629395, 0])
+    pad = 1.05
     HOW_LONG = 10 #seconds
+    
     
     if mass1:
         m1 = float(mass1)
@@ -79,13 +79,15 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             r2=values[3:6]
             r3=values[6:9]
         except:
-            return "Please enter exactly 9 comma-separated numbers."
+            print("DEBUG: Error parsing inputs")
+            return "Input parse error"
     elif len(values) == 1 and len(values[0]) == 0:
         r1=initial_positions[0]
         r2=initial_positions[1]
         r3=initial_positions[2]
     else:
-        return "Please enter exactly 9 comma-separated numbers."
+        print("DEBUG: Error parsing inputs")
+        return "Input parse error"
 
     r1=np.array(r1)
     r2=np.array(r2)
@@ -112,13 +114,15 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
             v2=velocity[3:6]
             v3=velocity[6:9]
         except:
-            return "Please enter exactly 9 comma-separated numbers."
+            print("DEBUG: Error parsing inputs")
+            return "Input parse error"
     elif len(velocity) == 1  and len(velocity[0]) == 0:
         v1=initial_velocities[0]
         v2=initial_velocities[1]
         v3=initial_velocities[2]
     else:
-        return "Please enter exactly 9 comma-separated numbers."
+        print("DEBUG: Error parsing inputs")
+        return "Input parse error"
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
@@ -375,9 +379,13 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         ymin, ymax = np.percentile(all_y, [low, high])
         zmin, zmax = np.percentile(all_z, [low, high])
 
-        ax.set_xlim(xmin*pad, xmax*pad)
-        ax.set_ylim(ymin*pad, ymax*pad)
-        ax.set_zlim(zmin*pad, zmax*pad)
+        try:
+            ax.set_xlim(xmin*pad, xmax*pad)
+            ax.set_ylim(ymin*pad, ymax*pad)
+            ax.set_zlim(zmin*pad, zmax*pad)
+        except ValueError:
+            print("DEBUG: ValueError setting limits!")
+            return "Value error"
 
         ax.set_box_aspect((1, 1, 1))
 

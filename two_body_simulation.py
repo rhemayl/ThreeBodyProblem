@@ -22,23 +22,23 @@ def twobp(position, velocity, mass1, mass2, video_path):
     #TRACE_COLORS = ("mediumblue", "red")
     TRACE_COLORS = ("cyan", "fuchsia")
 
-    # Non-Dimensionalisation
-    G=6.67408e-11 #N-m2/kg2
+    # Non-Dimensionalisation - removed
+    #G=6.67408e-11 #N-m2/kg2
+    G = 1
 
     #Reference quantities
-    m_nd=1.989e+30 #kg
-    r_nd=5.326e+12 #m
-    v_nd=30000 #m/s
-    t_nd=79.91*365.25*24*3600 #s
+    #m_nd=1.989e+30 #kg
+    #r_nd=5.326e+12 #m
+    #v_nd=30000 #m/s
+    #t_nd=79.91*365.25*24*3600 #s
 
     #Net constants
-    K1=G*t_nd*m_nd/(r_nd**2*v_nd)
-    K2=v_nd*t_nd/r_nd
+    #K1=G*t_nd*m_nd/(r_nd**2*v_nd)
+    #K2=v_nd*t_nd/r_nd
 
-    #Define masses
-    #m1=G #Star 1
-    #m2=G #Star 2
-    #m3=G #Star 3
+    K1 = 1
+    K2 = 1
+
 
     if mass1:
         m1 = float(mass1)
@@ -61,12 +61,14 @@ def twobp(position, velocity, mass1, mass2, video_path):
             r1=position[0:3]
             r2=position[3:6]
         except:
+            print("DEBUG: Error parsing inputs")
             return "Please enter exactly 6 comma-separated numbers."
     elif len(position) == 1 and len(position[0]) == 0:
         #Define initial position vectors
-        r1=[-0.5,1,0] #m
-        r2=[0.5,0,0.5] #m
+        r1=[-0.9,1,0] #m
+        r2=[0.7,0,0.2] #m
     else:
+        print("DEBUG: Error parsing inputs")
         return "Please enter exactly 6 comma-separated numbers."
 
     r1=np.array(r1)
@@ -90,12 +92,15 @@ def twobp(position, velocity, mass1, mass2, video_path):
             v1=velocity[0:3]
             v2=velocity[3:6]
         except:
-            return "Please enter exactly 9 comma-separated numbers."
+            print("DEBUG: Error parsing inputs")
+            return "Please enter exactly 6 comma-separated numbers."
     elif len(velocity) == 1 and len(velocity[0]) == 0:
-        v1=[0.02,0.02,0.02] #m/s
-        v2=[-0.05,0,-0.1] #m/s
+        v1=[0.5,0.02,0.2] #m/s
+        v2=[-0.3,0.3,-0.2] #m/s
+
     else:
-        return "Please enter exactly 9 comma-separated numbers."
+        print("DEBUG: Error parsing inputs")
+        return "Please enter exactly 6 comma-separated numbers."
 
     #Convert velocity vectors to arrays
     v1=np.array(v1)
@@ -111,7 +116,7 @@ def twobp(position, velocity, mass1, mass2, video_path):
         v1 = w[6:9]
         v2 = w[9:12]
 
-        # Separation vector and distance (protect against singular)
+        # Separation vector and distance (use epsilon to protect against singular division)
         r12_vec = r2 - r1
         eps = 1e-12
         r12 = np.linalg.norm(r12_vec)
@@ -291,9 +296,13 @@ def twobp(position, velocity, mass1, mass2, video_path):
         pad = 1.2
         L = max_extent * pad
 
-        ax.set_xlim(-L, L)
-        ax.set_ylim(-L, L)
-        ax.set_zlim(-L, L)
+        try:
+            ax.set_xlim(-L, L)
+            ax.set_ylim(-L, L)
+            ax.set_zlim(-L, L)
+        except ValueError:
+            print("DEBUG: ValueError setting limits!")
+            return "Error"
 
         ax.set_box_aspect((1, 1, 1))
 
