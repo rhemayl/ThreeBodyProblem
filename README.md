@@ -1,6 +1,6 @@
 # ThreeBodyProblem
 
-<i>Please download this repository and run app.py in the command line of your computer to access the webiste</i>
+<i>Please download this repository and run app.py in the command line of your computer to access the website</i>
 <br>
 <br>
 This is a simulation explaining the three-body problem, custom starting values can be provided in both the three-body and two-body simulations.
