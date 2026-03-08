@@ -72,11 +72,13 @@
             <div class="card">
                 <h1>The Three-Body Problem</h1>
                 <p>The Three-Body Problem describes the motion of three bodies under mutual gravitational interactions. This describes many situations in astronomy such as the motion of the Moon under the Sun and Earth's influence. </p>
-                <p>While the two body system is solvable, the addition of a third body makes the mathematical equations too complex, meaning that there have been no known general solutions (a formula that can predict the future positions of all three bodies based on the initial conditions). 
-                It is an example of a chaotic system, related to the <b>"butterfly effect"</b> - meaning that any change in force or mass, however small, can drastically affect the system's output. This makes the system unpredictable over long time periods. </p>
-                <p>Many cases leads to one body being eliminated through ejection or collision, which can lead to a stable two body interaction. </p>
-                <p>However, there are specific situations that have been discovered to produce three orbits that are known to be stable. These situations can be produced using precise starting conditions. In fact,some examples are shown on this website.</p>
-                <p>Another situation is a Restricted Three-Body Problem, where one body is small enough that it can be simplified into a two body system.</p>
+                <p>While any two-body system is solvable, the addition of a third body makes the mathematical equations too complex, meaning that there have been no known general solutions (a formula that can predict the future positions of all three bodies based on the initial conditions). 
+                It is an example of a chaotic system, related to the <b>"butterfly effect"</b> - meaning that a small change in position, velocity or mass can drastically affect the system's output. This makes the system unpredictable over long time periods. </p>
+                <p>Many cases leads to one body being eliminated through ejection or collision, which can lead to a stable two-body interaction. Two-body systems are always stable and predictable; see videos 14-16 on the Gallery page.</p>
+                <p>However, there are also certain situations that produce stable orbits in the three-body system. These situations can be produced using precise starting conditions. In fact, several examples are shown on this website - see videos 5 and 7-13 on the Gallery page.</p>
+                <p>The other videos are typical examples of chaotic behaviour. In videos 1 and 3, the three bodies interact with each other in complex ways. In videos 2, 4 and 6, the bodies drift away from each other, which often happens if acceleration is great enough to "escape" gravitational pull. Notice how in videos 2 and 6, two bodies effectively end up in a two-body system, orbiting each other, as the third green body is ejected.</p>
+                <p>To produce video 6 we took the starting values of video 5, a well-known stable configuration, and adjusted the second body's starting y-ordinate by 0.1. Within 10 seconds the system has wildly diverged from the stable behaviour seen in video 5. Chaotic systems are often characterised by this kind of extreme sensitivity on initial conditions.</p>
+                <p>Two related problems are the Planar Three-Body Problem, where the three bodies are confined to move in 2D space, and the Restricted Three-Body Problem, where one body is small enough that it can be simplified into a two body system. Both are easier to analyse than the general Three-Body Problem. In particular, videos 5 through 10 on the Gallery page are periodic solutions found in the Planar Three-Body Problem.</p>
 
             </div>
             <div class="card">
@@ -84,13 +86,14 @@
                 <p>The equations governing the Three-Body Problem are calculated through taking the positions and velocities of the three objects, which are represented as point masses, and finding their trajectories using Newton's laws of motion and universal gravitation.</p>
                 <p>The calculations of the three body problem can be given in terms of the equations vector positions \( r_i \) of three gravitationally interacting bodies of mass \( m_i \), where \( G \) is the Newtonian gravitational constant \(6.67408 \times 10^{-11}\).</p>
                 <p>By Newton's second law, the force exerted on each of the bodies is \( ma=F \), or \[m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i\]</p>
-                <p>Under Newtonian Gravitation, the force on a pair of bodies is \[
+                <p>We are familiar with Newton's law of universal gravitation, \( F = G\frac{m_i m_j}{r^2} \). It's necessary that we convert this into a vector form, by changing \( r^2 \) to be the norm of the vector between the two bodies \( |\mathbf{r}_i-\mathbf{r}_j|^2 \). We also need to multiply by a unit vector \( \frac{\mathbf{r}_i-\mathbf{r}_j}{|\mathbf{r}_i-\mathbf{r}_j|} \) representing the direction in which the force acts, and add a negative sign as it is an attractive force:</p>
+                <p>\[
                 \mathbf{F}_{ij}
                 =
                 - G \frac{m_i m_j (\mathbf{r}_i - \mathbf{r}_j)}
                 {\left| \mathbf{r}_i - \mathbf{r}_j \right|^3}
                 \]</p>
-                <p>The resultant force acting on any single body is the sum of the forces acting of the two other bodies: \[
+                <p>In the Three-Body Problem, the resultant force acting on any single body is the sum of the forces acting of the two other bodies: \[
                 \mathbf{F}_1 = \mathbf{F}_{12} + \mathbf{F}_{13}
                 \]
 
@@ -101,7 +104,7 @@
                 \[
                 \mathbf{F}_3 = \mathbf{F}_{31} + \mathbf{F}_{32}
                 \]</p>
-                <p>Substituting in the equations for the forces gives us the Differential Equations that govern the Three-Body Problem:
+                <p>Substituting in the equations for the forces gives us the equations of motion that govern the Three-Body Problem:
                 \[
                 \begin{aligned}
                 \ddot{\mathbf{r}}_{1} &= -G m_2 \frac{\mathbf{r}_1 - \mathbf{r}_2}{|\mathbf{r}_1 - \mathbf{r}_2|^3} - G m_3 \frac{\mathbf{r}_1 - \mathbf{r}_3}{|\mathbf{r}_1 - \mathbf{r}_3|^3}\\
@@ -109,16 +112,17 @@
                 \ddot{\mathbf{r}}_{3} &= -G m_1 \frac{\mathbf{r}_3 - \mathbf{r}_1}{|\mathbf{r}_3 - \mathbf{r}_1|^3} - G m_2 \frac{\mathbf{r}_3 - \mathbf{r}_2}{|\mathbf{r}_3 - \mathbf{r}_2|^3}
                 \end{aligned}
                 \]</p>
+                <p>These are second-order Ordinary Differential Equations, and it has been proven that they have no general analytic closed-form solution - they are not integrable. Mathematician Karl Sundman proved the existence of an analytic solution in the form of a power series in 1912, but it converges so slowly as to be practically useless - it was calculated in 1930 that at least \( 10^{8000000} \) terms would be needed for computation.</p>
             </div>
             <div class="card">
                 <h1>The Code</h1>
-                <p>The code for this simulation is written in Python and uses the NumPy and Matplotlib libraries which can calculate and animate the trajectories of the three bodies to create the simulation.</p>
-                <p>Each of the vector positions and velocities have three dimensions, and within the ThreeBodyEquations function, it is computed to calculate the gravitational accelerations of the masses.
-                    The accelerations are then integrated in each time frame to find the velocities, which is integrated to find the positions of the three bodies. </p>
-                <p>In the Animate function, each position in each time frame is plotted onto the graph.
-                    The animation is created by calculating and updating the positions in each time period. </p>
-                <p>The code uses non-dimensionalised gravity, using G=1 and scaled values of postion and velocities, this simplifies and lowers the load of the calculation, making video generation faster and also more stable.</p>
-                <p>The centre of mass of the system and its velocity is also found to rescale and recentre the simulation to fit within the frames of the video. The masses of each body are also represented by the size of each point in the video.</p>
+                <p>The code for this simulation is written in Python and uses the SciPy and Matplotlib libraries which can respectively calculate and animate the trajectories of the three bodies to create the simulation.</p>
+                <p>Positions and velocities each have three components in this 3D implementation of the Three-Body Problem, and so we use NumPy arrays to represent them. Conveniently, NumPy provides efficient vectorized operations for calculations using these arrays.</p>
+                <p>Because the Three-Body Problem has no analytic solution, we use numerical integration to approximate the trajectories of the three bodies. Every time frame, within the ThreeBodyEquations function, the current positions of the three masses are used to calculate their accelerations according to Newtonian gravity. The accelerations are then numerically integrated to find the new velocities, which are further integrated to find the new positions of the three bodies. This is less complicated than it sounds: all the code is really doing in this last part is adding the accelerations to the velocities and then adding the velocities to the positions.</p>
+                <p>In the Animate function, each position in each time frame is plotted onto the graph. The animation is created by calculating and updating the positions in each time period. The past positions are stored and plotted too to create a trail effect, which is helpful to visualise the motion of the bodies.</p>
+                <p>If we were to use our simulation on real-world scales, we should need to non-dimensionalise the positions, velocities and masses, as in the real world they are on different orders of magnitude, which would make calculations needlessly inefficient. In our theoretical simulation, we don't need this. With this mind, we also set \(G = 1\).</p>
+                <p>After the numerical integration process, the centre of mass of the system is found to rescale and recentre the simulation to fit within the frames of the video. Note that according to conversation of momentum, the centre of mass of the system remains constant, even as the bodies move chaotically around each other! The magnitude of the masses of each body is represented by the size of each point in the video.</p>
+                <p>Numerical integration is only an approximation at the end of the day, and small errors can accumulate over time - in theory, video 10 is supposed to remain in a stable flower pattern forever, but at the end of the video the pink and blue masses are noticeably off instead of exactly retracing their orbits. Another limitation is the algorithm's ability to model interactions between masses when they are very close: you can see this if you go to 0:06 on video 8 - the pink and green masses exhibit an almost horizontal trail when they bounce away from each other, when the actual path should be a smooth curve. A smaller time step would improve these two issues, but prolong the time taken to generate each video. And ultimately, no integration algorithm can perfectly model the Three-Body Problem.</p>
 
                 
             </div>

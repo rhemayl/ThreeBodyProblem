@@ -44,19 +44,19 @@ body {
     margin-left: 70%;
 }
 .card {
-    width: 450px;
+    width: 500px;
     height: 800px;
     padding: 10px;
     border: 2px solid #ffffff;
     background: rgba(2, 0, 21, 0.865);
     position: absolute;
     top: calc(50% - 400px);
-    left: calc(50% - 175px);
+    left: calc(50% - 200px);
     transition: 0.5s ease-in-out;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 h1 {
