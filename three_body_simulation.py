@@ -134,7 +134,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
 
 
     def ThreeBodyEquations(w,t,G,m1,m2,m3):
-        # Unpack variables (views, cheap)
+        # Unpack variables
         r1 = w[0:3]
         r2 = w[3:6]
         r3 = w[6:9]
@@ -157,7 +157,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         inv_r13_3 = 1.0 / (r13**3 + eps)
         inv_r23_3 = 1.0 / (r23**3 + eps)
 
-        # Accelerations (vectorized algebra, fewer temporaries)
+        # Accelerations (vectorized algebra)
         dv1bydt = K1 * (m2 * r12_vec * inv_r12_3 + m3 * r13_vec * inv_r13_3)
         dv2bydt = K1 * (m1 * (-r12_vec) * inv_r12_3 + m3 * r23_vec * inv_r23_3)
         dv3bydt = K1 * (m1 * (-r13_vec) * inv_r13_3 + m2 * (-r23_vec) * inv_r23_3)
@@ -167,7 +167,7 @@ def threebp(position, velocity, mass1, mass2, mass3, output_path="static/video/N
         dr2bydt = K2 * v2
         dr3bydt = K2 * v3
 
-        # Package derivatives into preallocated array (avoid concatenate overhead)
+        # Package derivatives into preallocated array
         derivs = np.empty(18, dtype=float)
         derivs[0:3] = dr1bydt
         derivs[3:6] = dr2bydt
